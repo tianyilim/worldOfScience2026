@@ -6,6 +6,14 @@ if [ ! -d "venv" ]; then
     python3 -m venv ./venv
 fi
 
+# Install relevant packages system-wide
+sudo apt update
+sudo apt install -y smbus net-tools network-manager
+
+# Permissions for I2C and serial
+sudo usermod -aG i2c "$USER"
+sudo usermod -aG dialout "$USER"
+
 # Activate venv
 source ./venv/bin/activate
 

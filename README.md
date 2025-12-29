@@ -17,8 +17,9 @@ This repo contains the software stack for the reference WOS robots, as well as t
    5. Click Write to flash the image.
    6. Wait for it to be done.
 4. [TODO] Need some way to set the username, password, enable password SSH login just by editing the SD card image.
-5. [TODO] Need to copy out the MAC address of the RPi for static IP settings.
-6. SSH into the RPi. Clone this repo.
-7. Install the workspace using [`./install.sh`](./install.sh).
+5. [TODO] Need to set up connection to wifi using the SD card image.
+6. [TODO] Need to copy out the MAC address of the RPi for static IP settings.
+7. SSH into the RPi. Clone this repo.
+8. Install the workspace using [`./install.sh`](./install.sh).
 
 ## Dev PC Setup
