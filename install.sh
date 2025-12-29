@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+
+# Create venv if it doesn't exist
+if [ ! -d "venv" ]; then
+    python3 -m venv ./venv
+fi
+
+# Activate venv
+source ./venv/bin/activate
+
+# Install relevant packages in venv
+python -m pip install --upgrade pip
+python -m pip install colcon_common_extensions
+
+# Build the workspace. The CMake arg ensures that colcon/cmake uses the venv's Python, and not any other python exe from
+# e.g conda.
+colcon build  --cmake-args -DPython3_FIND_VIRTUALENV="ONLY"
