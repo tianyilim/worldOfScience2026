@@ -171,7 +171,7 @@ class DFRobot_DC_Motor:
             l.append(s)
         return l
 
-    def set_moter_pwm_frequency(self, frequency):
+    def set_motor_pwm_frequency(self, frequency):
         '''!
           @brief Set dc motor pwm frequency
           @param frequency    Frequency to set, in range 100HZ to 12750HZ, otherwise no effective (actual frequency) = frequency - (frequency % 50)
@@ -210,7 +210,7 @@ class DFRobot_DC_Motor:
             self._write_bytes(self._REG_MOTOR1_ORIENTATION +
                               3 * (i - 1), [self.STOP])
 
-    def detecte(self):
+    def detect(self):
         '''!
           @brief    If you forget address you had set, use this to detecte them, must have class instance
           @return   Board list conformed
