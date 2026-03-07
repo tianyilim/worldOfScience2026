@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+git submodule update --init --recursive
+
 # Install relevant packages system-wide
 sudo apt update
 sudo apt install -y python3-smbus python3-venv net-tools network-manager
