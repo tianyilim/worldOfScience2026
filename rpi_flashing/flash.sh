@@ -15,11 +15,21 @@ status_echo() {
     echo -e "\033[46m\033[30m$1\033[0m"
 }
 
+# Warn echo: prints text with yellow background and black text
+warn_echo() {
+    echo -e "\033[43m\033[30m$1\033[0m"
+}
+
+# Error echo: prints text with red background and black text
+error_echo() {
+    echo -e "\033[41m\033[30m$1\033[0m"
+}
+
 # --- First, check for required files and tools. ---
 
 # Check for zstd. If not, error out and prompt user to install it.
 if ! command -v zstd &>/dev/null; then
-    echo "Error: zstd is not installed (needed for decompressing RPi image). Please install it and try again."
+    error_echo "Error: zstd is not installed (needed for decompressing RPi image). Please install it and try again."
     exit 1
 fi
 
@@ -30,13 +40,13 @@ if [ ! -f "$IMG_PATH" ]; then
     IMG_URL="https://github.com/ros-realtime/ros-realtime-rpi4-image/releases/download/24.04.2_v6.8.4-rt11-raspi_ros2_jazzy/ubuntu-24.04.2-rt-ros2-arm64+raspi.img.zst"
     wget -O "${IMG_PATH}.zst" "$IMG_URL"
     if [ $? -ne 0 ]; then
-        echo "Error: Failed to download image from $IMG_URL."
+        error_echo "Error: Failed to download image from $IMG_URL."
         exit 1
     fi
     status_echo "Decompressing the image..."
     zstd -d "${IMG_PATH}.zst" -o "$IMG_PATH"
     if [ $? -ne 0 ]; then
-        echo "Error: Failed to decompress the image."
+        error_echo "Error: Failed to decompress the image."
         exit 1
     fi
     rm "${IMG_PATH}.zst"
@@ -49,7 +59,7 @@ if [ ! -f "$RPI_IMAGER_PATH" ]; then
     status_echo "Raspberry Pi Imager not found at $RPI_IMAGER_PATH. Downloading..."
     wget -O "$RPI_IMAGER_PATH" "https://downloads.raspberrypi.com/imager/imager_latest_amd64.AppImage"
     if [ $? -ne 0 ]; then
-        echo "Error: Failed to download RPi Imager."
+        error_echo "Error: Failed to download RPi Imager."
         exit 1
     fi
     chmod +x "$RPI_IMAGER_PATH"
@@ -77,13 +87,13 @@ done
 
 # Validate ID argument
 if [ -z "$1" ]; then
-    echo "Error: ID argument is required."
+    error_echo "Error: ID argument is required."
     echo "$HELP_TEXT"
     exit 1
 fi
 
 if [[ ! $1 =~ ^[0-9]+$ ]] || [ "$1" -lt 1 ] || [ "$1" -gt 100 ]; then
-    echo "Error: ID provided '$1' must be an integer between 1 and 100."
+    error_echo "Error: ID provided '$1' must be an integer between 1 and 100."
     echo "$HELP_TEXT"
     exit 1
 fi
@@ -96,19 +106,19 @@ lsblk -p -d -o NAME,SIZE,MODEL | grep -E "sd|mmcblk"
 read -p "Enter the device path to flash (e.g., /dev/sdb): " DEVICE
 
 if [ ! -b "$DEVICE" ]; then
-    echo "Error: Device $DEVICE not found or not a block device."
+    error_echo "Error: Device $DEVICE not found or not a block device."
     exit 1
 fi
 
 # --- 3. FLASH THE IMAGE ---
 if [ "$NO_FLASH" = true ]; then
-    echo "No-flash mode enabled. Skipping SD card detection and flashing."
+    warn_echo "No-flash mode enabled. Skipping SD card detection and flashing."
 else
     status_echo "Flashing $IMG_PATH to $DEVICE..."
     sudo $RPI_IMAGER_PATH --cli --no-verify "$IMG_PATH" "$DEVICE"
 
     if [ $? -ne 0 ]; then
-        echo "Flashing failed!"
+        error_echo "Flashing failed!"
         exit 1
     fi
 fi
