@@ -44,7 +44,7 @@ It automatically sets a wifi connection to `PLACEHOLDER` network.
 2. Clone this repo:
 
    ```bash
-   git clone git@github.com:tianyilim/worldOfScience2026
+   git clone https://github.com/tianyilim/worldOfScience2026.git
    ```
 
 3. Install the workspace using [`./install.sh`](./install.sh).
