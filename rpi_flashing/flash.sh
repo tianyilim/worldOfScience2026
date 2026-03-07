@@ -127,6 +127,9 @@ echo "Injecting custom configurations..."
 cat <<EOF | sudo tee "$MOUNT_DIR/user-data" >/dev/null
 #cloud-config
 ssh_pwauth: True
+ssh:
+  install_server: True
+  allow_pw: True
 users:
   - name: rpi_${ID}
     gecos: ROS Robot ${ID}
@@ -139,6 +142,9 @@ chpasswd:
   list: |
     rpi_${ID}:robotics
   expire: False
+runcmd:
+  - systemctl enable --now ssh
+  - ufw allow ssh  # Ensures firewall doesn't block you
 EOF
 
 # Create network-config (WiFi + Static IP)
