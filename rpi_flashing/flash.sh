@@ -172,13 +172,8 @@ ethernets:
     optional: true
 wifis:
   wlan0:
-    dhcp4: false
-    addresses: [192.168.1.$((ID + IP_ID_OFFSET))/24]
-    routes:
-      - to: default
-        via: 192.168.1.1
-    nameservers:
-      addresses: [8.8.8.8, 1.1.1.1]
+    dhcp4: true
+    optional: true
     access-points:
       "$WIFI_SSID":
         password: "$WIFI_PASS"
