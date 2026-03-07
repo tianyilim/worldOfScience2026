@@ -119,6 +119,7 @@ fi
 
 MOUNT_DIR="/tmp/rpi_boot"
 mkdir -p "$MOUNT_DIR"
+echo "Sudo is required to mount the RPi boot partition and write configuration files..."
 sudo mount "$BOOT_PART" "$MOUNT_DIR"
 
 echo "Injecting custom configurations..."
