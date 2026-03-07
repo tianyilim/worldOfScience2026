@@ -79,19 +79,19 @@ fi
 ID="$1"
 
 # --- 2. DETECT SD CARD ---
+echo "Searching for SD cards..."
+lsblk -p -d -o NAME,SIZE,MODEL | grep -E "sd|mmcblk"
+read -p "Enter the device path to flash (e.g., /dev/sdb): " DEVICE
+
+if [ ! -b "$DEVICE" ]; then
+    echo "Error: Device $DEVICE not found or not a block device."
+    exit 1
+fi
+
+# --- 3. FLASH THE IMAGE ---
 if [ "$NO_FLASH" = true ]; then
     echo "No-flash mode enabled. Skipping SD card detection and flashing."
 else
-    echo "Searching for SD cards..."
-    lsblk -p -d -o NAME,SIZE,MODEL | grep -E "sd|mmcblk"
-    read -p "Enter the device path to flash (e.g., /dev/sdb): " DEVICE
-
-    if [ ! -b "$DEVICE" ]; then
-        echo "Error: Device $DEVICE not found or not a block device."
-        exit 1
-    fi
-
-    # --- 3. FLASH THE IMAGE ---
     echo "Flashing $IMG_PATH to $DEVICE..."
     sudo $RPI_IMAGER_PATH --cli --no-verify "$IMG_PATH" "$DEVICE"
 
