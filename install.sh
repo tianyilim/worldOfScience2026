@@ -1,14 +1,14 @@
 #!/bin/bash
 set -e
 
+# Install relevant packages system-wide
+sudo apt update
+sudo apt install -y python3-smbus python3-venv net-tools network-manager
+
 # Create venv if it doesn't exist
 if [ ! -d "venv" ]; then
     python3 -m venv ./venv
 fi
-
-# Install relevant packages system-wide
-sudo apt update
-sudo apt install -y python3-smbus net-tools network-manager
 
 # Permissions for I2C and serial
 sudo usermod -aG i2c "$USER"
