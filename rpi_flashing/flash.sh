@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # --- CONFIGURATION ---
-WIFI_SSID="Your_SSID_Here"
-WIFI_PASS="Your_Password_Here"
+WIFI_SSID="fluffy_clouds"
+WIFI_PASS="sp1sp2sp3"
 IMG_PATH="./data/ubuntu-24.04.2-rt-ros2-arm64+raspi.img"
 RPI_IMAGER_PATH="./data/imager_latest_amd64.AppImage"
 NO_FLASH=false
