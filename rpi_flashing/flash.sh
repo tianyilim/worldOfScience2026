@@ -115,7 +115,7 @@ if [ "$NO_FLASH" = true ]; then
     warn_echo "No-flash mode enabled. Skipping SD card detection and flashing."
 else
     status_echo "Flashing $IMG_PATH to $DEVICE..."
-    sudo $RPI_IMAGER_PATH --cli --no-verify "$IMG_PATH" "$DEVICE"
+    sudo $RPI_IMAGER_PATH --cli "$IMG_PATH" "$DEVICE"
 
     if [ $? -ne 0 ]; then
         error_echo "Flashing failed!"
