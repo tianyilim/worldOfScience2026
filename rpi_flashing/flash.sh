@@ -32,6 +32,8 @@ if [ ! -f "$IMG_PATH" ]; then
         exit 1
     fi
     rm "${IMG_PATH}.zst"
+else
+    echo "Image file found at $IMG_PATH."
 fi
 
 # -> Check for rpi-imager. If not, download it.
@@ -43,6 +45,8 @@ if [ ! -f "$RPI_IMAGER_PATH" ]; then
         exit 1
     fi
     chmod +x "$RPI_IMAGER_PATH"
+else
+    echo "Raspberry Pi Imager found at $RPI_IMAGER_PATH."
 fi
 
 # --- 1. PARSE USER INPUT ---
@@ -92,7 +96,9 @@ fi
 if [ "$NO_FLASH" = true ]; then
     echo "No-flash mode enabled. Skipping SD card detection and flashing."
 else
+    echo "====="
     echo "Flashing $IMG_PATH to $DEVICE..."
+    echo "====="
     sudo $RPI_IMAGER_PATH --cli --no-verify "$IMG_PATH" "$DEVICE"
 
     if [ $? -ne 0 ]; then
