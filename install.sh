@@ -5,7 +5,7 @@ git submodule update --init --recursive
 
 # Install relevant packages system-wide
 sudo apt update
-sudo apt install -y python3-smbus python3-venv net-tools network-manager
+sudo apt install -y python3-smbus python3-venv net-tools network-manager build-essential cmake
 
 # Create venv if it doesn't exist
 if [ ! -d "venv" ]; then
