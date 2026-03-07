@@ -8,6 +8,13 @@ RPI_IMAGER_PATH="./data/imager_latest_amd64.AppImage"
 NO_FLASH=false
 IP_ID_OFFSET=100 # To avoid IP conflicts, we can offset the ID for static IP assignment (e.g., 192.168.1.(ID+100))
 
+# --- FUNCTIONS ---
+
+# Status echo: prints text with cyan background and black text
+status_echo() {
+    echo -e "\033[46m\033[30m$1\033[0m"
+}
+
 # --- First, check for required files and tools. ---
 
 # Check for zstd. If not, error out and prompt user to install it.
@@ -18,7 +25,7 @@ fi
 
 # -> Check for the image file. If not found, download it.
 if [ ! -f "$IMG_PATH" ]; then
-    echo "Image file not found at $IMG_PATH. Downloading..."
+    status_echo "Image file not found at $IMG_PATH. Downloading..."
     # Example URL, replace with actual download link if needed.
     IMG_URL="https://github.com/ros-realtime/ros-realtime-rpi4-image/releases/download/24.04.2_v6.8.4-rt11-raspi_ros2_jazzy/ubuntu-24.04.2-rt-ros2-arm64+raspi.img.zst"
     wget -O "${IMG_PATH}.zst" "$IMG_URL"
@@ -26,7 +33,7 @@ if [ ! -f "$IMG_PATH" ]; then
         echo "Error: Failed to download image from $IMG_URL."
         exit 1
     fi
-    echo "Decompressing the image..."
+    status_echo "Decompressing the image..."
     zstd -d "${IMG_PATH}.zst" -o "$IMG_PATH"
     if [ $? -ne 0 ]; then
         echo "Error: Failed to decompress the image."
@@ -34,12 +41,12 @@ if [ ! -f "$IMG_PATH" ]; then
     fi
     rm "${IMG_PATH}.zst"
 else
-    echo "Image file found at $IMG_PATH."
+    status_echo "Image file found at $IMG_PATH."
 fi
 
 # -> Check for rpi-imager. If not, download it.
 if [ ! -f "$RPI_IMAGER_PATH" ]; then
-    echo "Raspberry Pi Imager not found at $RPI_IMAGER_PATH. Downloading..."
+    status_echo "Raspberry Pi Imager not found at $RPI_IMAGER_PATH. Downloading..."
     wget -O "$RPI_IMAGER_PATH" "https://downloads.raspberrypi.com/imager/imager_latest_amd64.AppImage"
     if [ $? -ne 0 ]; then
         echo "Error: Failed to download RPi Imager."
@@ -47,7 +54,7 @@ if [ ! -f "$RPI_IMAGER_PATH" ]; then
     fi
     chmod +x "$RPI_IMAGER_PATH"
 else
-    echo "Raspberry Pi Imager found at $RPI_IMAGER_PATH."
+    status_echo "Raspberry Pi Imager found at $RPI_IMAGER_PATH."
 fi
 
 # --- 1. PARSE USER INPUT ---
@@ -84,7 +91,7 @@ fi
 ID="$1"
 
 # --- 2. DETECT SD CARD ---
-echo "Searching for SD cards..."
+status_echo "Searching for SD cards..."
 lsblk -p -d -o NAME,SIZE,MODEL | grep -E "sd|mmcblk"
 read -p "Enter the device path to flash (e.g., /dev/sdb): " DEVICE
 
@@ -97,9 +104,7 @@ fi
 if [ "$NO_FLASH" = true ]; then
     echo "No-flash mode enabled. Skipping SD card detection and flashing."
 else
-    echo "====="
-    echo "Flashing $IMG_PATH to $DEVICE..."
-    echo "====="
+    status_echo "Flashing $IMG_PATH to $DEVICE..."
     sudo $RPI_IMAGER_PATH --cli --no-verify "$IMG_PATH" "$DEVICE"
 
     if [ $? -ne 0 ]; then
@@ -122,7 +127,7 @@ mkdir -p "$MOUNT_DIR"
 echo "Sudo is required to mount the RPi boot partition and write configuration files..."
 sudo mount "$BOOT_PART" "$MOUNT_DIR"
 
-echo "Injecting custom configurations..."
+status_echo "Injecting custom configurations..."
 
 # Create user-data (User, Password, Groups)
 cat <<EOF | sudo tee "$MOUNT_DIR/user-data" >/dev/null
@@ -171,4 +176,4 @@ EOF
 
 # --- 5. CLEANUP ---
 sudo umount "$MOUNT_DIR"
-echo "Done! Raspberry Pi ${ID} is ready. Eject the SD card."
+status_echo "Done! Raspberry Pi ${ID} is ready. Eject the SD card."
