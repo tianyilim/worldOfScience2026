@@ -142,6 +142,7 @@ status_echo "Injecting custom configurations..."
 # Create user-data (User, Password, Groups)
 cat <<EOF | sudo tee "$MOUNT_DIR/user-data" >/dev/null
 #cloud-config
+hostname: rpi_${ID}
 ssh_pwauth: True
 ssh:
   install_server: True
