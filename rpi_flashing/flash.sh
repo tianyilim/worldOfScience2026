@@ -44,13 +44,32 @@ if [ ! -f "$RPI_IMAGER_PATH" ]; then
     chmod +x "$RPI_IMAGER_PATH"
 fi
 
-# --- 1. GET USER INPUT ---
-read -p "Enter Raspberry Pi ID (1-100): " ID
+# --- 1. PARSE USER INPUT ---
+HELP_TEXT="Usage: $0 <ID> [-h|--help]
+<ID>    : A unique integer ID for this Raspberry Pi (1-100).
+-h, --help : Show this help message and exit."
 
-if [[ ! $ID =~ ^[0-9]+$ ]] || [ "$ID" -lt 1 ] || [ "$ID" -gt 100 ]; then
-    echo "Error: ID must be a number between 1 and 100."
+for arg in "$@"; do
+    if [[ "$arg" == "-h" ]] || [[ "$arg" == "--help" ]]; then
+        echo "$HELP_TEXT"
+        exit 1
+    fi
+done
+
+# Validate ID argument
+if [ -z "$1" ]; then
+    echo "Error: ID argument is required."
+    echo "$HELP_TEXT"
     exit 1
 fi
+
+if [[ ! $1 =~ ^[0-9]+$ ]] || [ "$1" -lt 1 ] || [ "$1" -gt 100 ]; then
+    echo "Error: ID provided '$1' must be an integer between 1 and 100."
+    echo "$HELP_TEXT"
+    exit 1
+fi
+
+ID="$1"
 
 # --- 2. DETECT SD CARD ---
 echo "Searching for SD cards..."
