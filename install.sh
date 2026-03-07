@@ -8,7 +8,7 @@ fi
 
 # Install relevant packages system-wide
 sudo apt update
-sudo apt install -y smbus net-tools network-manager
+sudo apt install -y python3-smbus net-tools network-manager
 
 # Permissions for I2C and serial
 sudo usermod -aG i2c "$USER"
