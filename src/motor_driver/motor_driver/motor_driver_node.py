@@ -1,3 +1,4 @@
+from rcl_interfaces.msg import ParameterDescriptor
 import rclpy
 from rclpy.node import Node
 import time
@@ -56,18 +57,46 @@ class MotorDriverNode(Node):
     def __init__(self):
         super().__init__('motor_driver_node')
 
+        self.declare_parameter("max_linear_vel", 1.0,
+                               descriptor=ParameterDescriptor(description="Maximum linear velocity"))
+        self.declare_parameter("max_angular_vel", 0.5,
+                               descriptor=ParameterDescriptor(description="Maximum angular velocity"))
+        self.declare_parameter("left_right_ratio", 1.0,
+                               descriptor=ParameterDescriptor(description="Ratio of left to right motor speed"))
+        self.declare_parameter("wheelbase", 0.2,
+                               descriptor=ParameterDescriptor(description="Distance between the wheels"))
+        self.declare_parameter("wheel_radius", 0.05,
+                               descriptor=ParameterDescriptor(description="Radius of the wheels"))
+        self.declare_parameter("wheel_angvel_to_pwm", 100.0,
+                               descriptor=ParameterDescriptor(description="Conversion factor from wheel angular velocity to PWM value"))
+        self.declare_parameter("invert_left_motor", False,
+                               descriptor=ParameterDescriptor(description="Invert the direction of the left motor"))
+        self.declare_parameter("invert_right_motor", False,
+                               descriptor=ParameterDescriptor(description="Invert the direction of the right motor"))
+
         # Declare class parameters
-        self.MAX_LINEAR_VEL = 1.0  # m/s
+        self.MAX_LINEAR_VEL = self.get_parameter(
+            "max_linear_vel").get_parameter_value().double_value
         '''Maximum linear velocity. Input values outside the range will be clamped'''
-        self.MAX_ANGULAR_VEL = 0.5  # rad/s
+        self.MAX_ANGULAR_VEL = self.get_parameter(
+            "max_angular_vel").get_parameter_value().double_value
         '''Maximum angular velocity. Input values outside the range will be clamped'''
-        self.LEFT_RIGHT_RATIO = 1.0
+        self.LEFT_RIGHT_RATIO = self.get_parameter(
+            "left_right_ratio").get_parameter_value().double_value
         '''Ratio of left to right motor speed, to account for hardware differences'''
 
-        self.WHEELBASE = 0.2
-        self.WHEEL_RADIUS = 0.05
+        self.WHEELBASE = self.get_parameter(
+            "wheelbase").get_parameter_value().double_value
+        self.WHEEL_RADIUS = self.get_parameter(
+            "wheel_radius").get_parameter_value().double_value
         # Conversion factor from wheel angular velocity (rad/s) to PWM value
-        self.WHEEL_ANGVEL_TO_PWM = 100.0
+        self.WHEEL_ANGVEL_TO_PWM = self.get_parameter(
+            "wheel_angvel_to_pwm").get_parameter_value().double_value
+
+        self.INVERT_LEFT_MOTOR = self.get_parameter(
+            "invert_left_motor").get_parameter_value().bool_value
+        self.INVERT_RIGHT_MOTOR = self.get_parameter(
+            "invert_right_motor").get_parameter_value().bool_value
 
         # Initialize motor driver board
         self.board = get_motor_driver_board(self)
@@ -115,17 +144,25 @@ class MotorDriverNode(Node):
         # Set motor directions and speeds.
         if speed_left >= 0:
             self.board.motor_movement(
-                [self.board.M1], self.board.CCW, pwm_left)
+                [self.board.M1],
+                self.board.CCW if not self.INVERT_LEFT_MOTOR else self.board.CW,
+                pwm_left)
         else:
             self.board.motor_movement(
-                [self.board.M1], self.board.CW, pwm_left)
+                [self.board.M1],
+                self.board.CW if not self.INVERT_LEFT_MOTOR else self.board.CCW,
+                pwm_left)
 
         if speed_right >= 0:
             self.board.motor_movement(
-                [self.board.M2], self.board.CW, pwm_right)
+                [self.board.M2],
+                self.board.CW if not self.INVERT_RIGHT_MOTOR else self.board.CCW,
+                pwm_right)
         else:
             self.board.motor_movement(
-                [self.board.M2], self.board.CCW, pwm_right)
+                [self.board.M2],
+                self.board.CCW if not self.INVERT_RIGHT_MOTOR else self.board.CW,
+                pwm_right)
 
 
 def main(args=None):
