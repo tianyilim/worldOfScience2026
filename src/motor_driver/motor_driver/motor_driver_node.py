@@ -67,7 +67,7 @@ class MotorDriverNode(Node):
                                descriptor=ParameterDescriptor(description="Distance between the wheels"))
         self.declare_parameter("wheel_radius", 0.032,
                                descriptor=ParameterDescriptor(description="Radius of the wheels"))
-        self.declare_parameter("wheel_angvel_to_pwm", 100.0,
+        self.declare_parameter("wheel_angvel_to_pwm", 20.0,
                                descriptor=ParameterDescriptor(description="Conversion factor from wheel angular velocity to PWM value"))
         self.declare_parameter("invert_left_motor", False,
                                descriptor=ParameterDescriptor(description="Invert the direction of the left motor"))
@@ -140,6 +140,7 @@ class MotorDriverNode(Node):
             f"  -> wheel speeds: left {speed_left:.2f} rad/s, right {speed_right:.2f} rad/s")
         self.get_logger().info(
             f"  -> pwm values: left {pwm_left:.2f} %, right {pwm_right:.2f} %")
+        self.get_logger().info("-"*80)
 
         # Set motor directions and speeds.
         if speed_left >= 0:
