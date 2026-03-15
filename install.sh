@@ -14,7 +14,7 @@ git submodule update --init --recursive
 sudo apt update
 sudo apt install -y python3-smbus python3-venv python3-pip \
     net-tools network-manager build-essential cmake \
-    python3-colcon-common-extensions
+    python3-colcon-common-extensions ros-jazzy-slam-toolbox
 
 # Permissions for I2C and serial
 sudo usermod -aG i2c "$USER"
