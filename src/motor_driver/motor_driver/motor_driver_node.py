@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 import time
-
+from pprint import pformat
 from geometry_msgs.msg import Twist
 from motor_driver.motor_driver_impl import THIS_BOARD_TYPE, DFRobot_DC_Motor_IIC as Board
 
@@ -33,7 +33,7 @@ def get_motor_driver_board(node: "MotorDriverNode") -> Board:
     # Do initial configuration and hardware sanity check
     l = board.detect()
     node.get_logger().info("Motor driver board list conform:")
-    node.get_logger().info(l)
+    node.get_logger().info(f"{pformat(l)}")
 
     while board.begin() != board.STA_OK:    # Board begin and check board status
         print_board_status(board)
