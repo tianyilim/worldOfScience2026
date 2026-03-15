@@ -134,11 +134,11 @@ class MotorDriverNode(Node):
         # Convert from rad/s to pwm value
         pwm_left = min(abs(speed_left) * self.WHEEL_ANGVEL_TO_PWM, 100.0)
         pwm_right = min(abs(speed_right) * self.WHEEL_ANGVEL_TO_PWM, 100.0)
-        self.get_logger().debug(
+        self.get_logger().info(
             f"cmd_vel received: linear {msg.linear.x:.2f} m/s, angular {msg.angular.z:.2f} rad/s")
-        self.get_logger().debug(
+        self.get_logger().info(
             f"  -> wheel speeds: left {speed_left:.2f} rad/s, right {speed_right:.2f} rad/s")
-        self.get_logger().debug(
+        self.get_logger().info(
             f"  -> pwm values: left {pwm_left:.2f} %, right {pwm_right:.2f} %")
 
         # Set motor directions and speeds.
