@@ -99,3 +99,42 @@ Additional software:
 - VS Code
 - Tmux (if using a Linux terminal), else Windows Terminal
 - WinSCP if using Windows
+
+## Running the Code
+
+### RPi
+
+1. RPi Driver:
+
+   ```bash
+   ros2 launch rplidar_ros rplidar_a1_launch.py
+   ```
+
+2. Motor Driver:
+
+   ```bash
+   ros2 run motor_driver motor_driver_node
+   ```
+
+3. SLAM
+
+### Host PC
+
+Ensure first that `ROS_DOMAIN_ID` is set properly.
+
+You can identify this by doing `ros2 node list` and seeing if the list of nodes is as you expect.
+
+> **TODO**: We should prefix the nodes with the `RPI_ID`, which would help immensely in debugging any future networking issues!
+
+1. Teleop from Keyboard:
+
+   ```bash
+   # Need to set the linear and angular speeds appropriately
+   ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p speed:=0.05 -p turn:=2.5
+   ```
+
+2. RViz:
+
+   ```bash
+   rviz2 -d ./viz/worldOfScienceViz.rviz
+   ```
