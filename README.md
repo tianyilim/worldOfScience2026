@@ -91,3 +91,11 @@ TX errors 0 dropped 0 overruns 0 carrier 0 collisions 0
 3. Run the installation script in this folder: [`./install.sh <RPI_ID>`](./install.sh).
 
 ## Dev PC Setup
+
+For now, this is the same as the ROS2 Jazzy [installation instructions](https://docs.ros.org/en/jazzy/Installation.html).
+
+Additional software:
+
+- VS Code
+- Tmux (if using a Linux terminal), else Windows Terminal
+- WinSCP if using Windows
