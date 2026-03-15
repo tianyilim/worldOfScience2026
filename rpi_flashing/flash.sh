@@ -1,12 +1,11 @@
 #!/bin/bash
 
 # --- CONFIGURATION ---
-WIFI_SSID="fluffy_clouds"
-WIFI_PASS="sp1sp2sp3"
+WIFI_SSID=""
+WIFI_PASS=""
 IMG_PATH="./data/ubuntu-24.04.2-rt-ros2-arm64+raspi.img"
 RPI_IMAGER_PATH="./data/imager_latest_amd64.AppImage"
 NO_FLASH=false
-IP_ID_OFFSET=100 # To avoid IP conflicts, we can offset the ID for static IP assignment (e.g., 192.168.1.(ID+100))
 
 # --- FUNCTIONS ---
 
@@ -68,37 +67,81 @@ else
 fi
 
 # --- 1. PARSE USER INPUT ---
-HELP_TEXT="Usage: $0 <ID> [-h|--help]
-<ID>    : A unique integer ID for this Raspberry Pi (1-100).
--h, --help : Show this help message and exit.
---no_flash : Skip the flashing step (for testing configuration generation)."
+HELP_TEXT="Usage: $0 <ID> --wifi_ssid <SSID> --wifi_pass <PASSWORD> [--no_flash] [-h|--help]
+<ID>            : A unique integer ID for this Raspberry Pi (1-100).
+--wifi_ssid     : WiFi SSID to configure on the Raspberry Pi.
+--wifi_pass     : WiFi password to configure on the Raspberry Pi.
+-h, --help      : Show this help message and exit.
+--no_flash      : Skip the flashing step (for testing configuration generation)."
 
-# Parse flags
-for arg in "$@"; do
-    if [[ "$arg" == "-h" ]] || [[ "$arg" == "--help" ]]; then
-        echo "$HELP_TEXT"
-        exit 1
-    fi
+ID=""
 
-    if [[ "$arg" == "--no_flash" ]]; then
-        NO_FLASH=true
-    fi
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -h|--help)
+            echo "$HELP_TEXT"
+            exit 0
+            ;;
+        --no_flash)
+            NO_FLASH=true
+            shift
+            ;;
+        --wifi_ssid)
+            if [ -z "$2" ]; then
+                error_echo "Error: --wifi_ssid requires a value."
+                echo "$HELP_TEXT"
+                exit 1
+            fi
+            WIFI_SSID="$2"
+            shift 2
+            ;;
+        --wifi_pass)
+            if [ -z "$2" ]; then
+                error_echo "Error: --wifi_pass requires a value."
+                echo "$HELP_TEXT"
+                exit 1
+            fi
+            WIFI_PASS="$2"
+            shift 2
+            ;;
+        *)
+            if [ -z "$ID" ]; then
+                ID="$1"
+                shift
+            else
+                error_echo "Error: Unknown argument '$1'."
+                echo "$HELP_TEXT"
+                exit 1
+            fi
+            ;;
+    esac
 done
 
-# Validate ID argument
-if [ -z "$1" ]; then
+# Validate required arguments
+if [ -z "$ID" ]; then
     error_echo "Error: ID argument is required."
     echo "$HELP_TEXT"
     exit 1
 fi
 
-if [[ ! $1 =~ ^[0-9]+$ ]] || [ "$1" -lt 1 ] || [ "$1" -gt 100 ]; then
-    error_echo "Error: ID provided '$1' must be an integer between 1 and 100."
+if [[ ! $ID =~ ^[0-9]+$ ]] || [ "$ID" -lt 1 ] || [ "$ID" -gt 100 ]; then
+    error_echo "Error: ID provided '$ID' must be an integer between 1 and 100."
     echo "$HELP_TEXT"
     exit 1
 fi
 
-ID="$1"
+if [ -z "$WIFI_SSID" ]; then
+    error_echo "Error: --wifi_ssid is required."
+    echo "$HELP_TEXT"
+    exit 1
+fi
+
+if [ -z "$WIFI_PASS" ]; then
+    error_echo "Error: --wifi_pass is required."
+    echo "$HELP_TEXT"
+    exit 1
+fi
 
 # --- 2. DETECT SD CARD ---
 status_echo "Searching for SD cards..."
