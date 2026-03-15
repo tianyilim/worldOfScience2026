@@ -36,7 +36,46 @@ It then sets up username and password for the default user based on the `RPI_ID`
 
 It automatically sets a wifi connection to `PLACEHOLDER` network.
 
-[TODO] Need to copy out the MAC address of the RPi for static IP settings.
+### Setting up static IP of Raspberry Pi
+
+To obtain the MAC address of the RPi for setting static IP, you can run `ifconfig`.
+The MAC address of note is in `wlan0`.
+
+<details>
+<summary>
+Example ifconfig output:
+</summary>
+
+```
+rpi_11@rpi11:~$ ifconfig
+eth0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        ether e4:5f:01:9c:f3:35  txqueuelen 1000  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING> mtu 65536
+inet 127.0.0.1 netmask 255.0.0.0
+inet6 ::1 prefixlen 128 scopeid 0x10<host>
+loop txqueuelen 1000 (Local Loopback)
+RX packets 5474 bytes 2579528 (2.5 MB)
+RX errors 0 dropped 0 overruns 0 frame 0
+TX packets 5474 bytes 2579528 (2.5 MB)
+TX errors 0 dropped 0 overruns 0 carrier 0 collisions 0
+
+wlan0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST> mtu 1500
+inet 192.168.123.7 netmask 255.255.255.0 broadcast 192.168.123.255
+inet6 fe80::e65f:1ff:fe9c:f336 prefixlen 64 scopeid 0x20<link>
+ether e4:5f:01:9c:f3:36 txqueuelen 1000 (Ethernet)
+RX packets 58217 bytes 36725951 (36.7 MB)
+RX errors 0 dropped 0 overruns 0 frame 0
+TX packets 42386 bytes 7540910 (7.5 MB)
+TX errors 0 dropped 0 overruns 0 carrier 0 collisions 0
+
+```
+
+</details>
 
 ### Installing ROS and software stack
 
@@ -47,6 +86,6 @@ It automatically sets a wifi connection to `PLACEHOLDER` network.
    git clone https://github.com/tianyilim/worldOfScience2026.git
    ```
 
-3. Install the workspace using [`./install.sh`](./install.sh).
+3. Run the installation script in this folder: [`./install.sh <RPI_ID>`](./install.sh).
 
 ## Dev PC Setup
