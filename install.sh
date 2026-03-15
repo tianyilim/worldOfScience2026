@@ -21,7 +21,7 @@ source ./venv/bin/activate
 
 # Install relevant packages in venv
 python -m pip install --upgrade pip
-python -m pip install colcon_common_extensions
+python -m pip install colcon_common_extensions catkin_pkg smbus
 
 # Build the workspace. The CMake arg ensures that colcon/cmake uses the venv's Python, and not any other python exe from
 # e.g conda.
