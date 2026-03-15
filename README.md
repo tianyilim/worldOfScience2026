@@ -1,6 +1,6 @@
 # World Of Science ROS Code Repository
 
-This repo contains the software stack for the reference WOS robots, as well as the sim environment to evaluate that they work.
+This repo contains the software stack for the reference WOS robots.
 
 ## Raspberry Pi Setup
 
