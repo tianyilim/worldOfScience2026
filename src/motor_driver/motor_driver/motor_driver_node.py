@@ -63,9 +63,9 @@ class MotorDriverNode(Node):
                                descriptor=ParameterDescriptor(description="Maximum angular velocity"))
         self.declare_parameter("left_right_ratio", 1.0,
                                descriptor=ParameterDescriptor(description="Ratio of left to right motor speed"))
-        self.declare_parameter("wheelbase", 0.2,
+        self.declare_parameter("wheelbase", 0.12,
                                descriptor=ParameterDescriptor(description="Distance between the wheels"))
-        self.declare_parameter("wheel_radius", 0.05,
+        self.declare_parameter("wheel_radius", 0.032,
                                descriptor=ParameterDescriptor(description="Radius of the wheels"))
         self.declare_parameter("wheel_angvel_to_pwm", 100.0,
                                descriptor=ParameterDescriptor(description="Conversion factor from wheel angular velocity to PWM value"))
