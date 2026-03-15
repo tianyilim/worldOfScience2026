@@ -9,7 +9,9 @@ This repo contains the software stack for the reference WOS robots, as well as t
 Using a Linux laptop with sudo rights and a SD card slot, run the [flashing script](./rpi_flashing/`flash.sh`):
 
 ```bash
-./flash.sh $RPI_ID # 1-100
+./flash.sh $RPI_ID \ # 1-100
+   --wifi_ssid $WIFI_SSID --wifi_pass $WIFI_PASS
+# Fill in WIFI_SSID, WIFI_PASS for the actual system
 ```
 
 <details>
