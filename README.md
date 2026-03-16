@@ -138,3 +138,10 @@ You can identify this by doing `ros2 node list` and seeing if the list of nodes 
    ```bash
    rviz2 -d ./viz/worldOfScienceViz.rviz
    ```
+
+## Next Steps
+
+- [ ] Setup static tf broadcaster to broadcast `laser`->`base_link` transform
+- [ ] Setup [`laser_scan_matcher`](https://github.com/CCNYRoboticsLab/scan_tools/tree/ros2) to publish `base_link`->`odom` transform
+- [ ] See if we can integrate in an IMU for better scan matching performance under rotation.
+- [ ] Launchfile to tie everything together.
