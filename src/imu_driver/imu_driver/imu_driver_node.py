@@ -8,6 +8,12 @@ import board
 import busio
 
 
+PARAM_NAME_R_Body_Imu_Yaw_Deg = 'yaw_B_I_deg'
+PARAM_NAME_R_Body_Imu_Pitch_Deg = 'pitch_B_I_deg'
+PARAM_NAME_R_Body_Imu_Roll_Deg = 'roll_B_I_deg'
+PARAM_NAME_Poll_Rate_Hz = 'freq_hz'
+
+
 class BNO055DriverNode(Node):
     """ROS2 node for BNO055 IMU sensor."""
 
@@ -16,20 +22,20 @@ class BNO055DriverNode(Node):
 
         # Declare parameters
         # yaw, pitch, roll in degrees
-        self.declare_parameter('orientation_yaw_deg', 0.0)
-        self.declare_parameter('orientation_pitch_deg', 0.0)
-        self.declare_parameter('orientation_roll_deg', 0.0)
-        self.declare_parameter('poll_rate_hz', 50.0)
+        self.declare_parameter(PARAM_NAME_R_Body_Imu_Yaw_Deg, 0.0)
+        self.declare_parameter(PARAM_NAME_R_Body_Imu_Pitch_Deg, 0.0)
+        self.declare_parameter(PARAM_NAME_R_Body_Imu_Roll_Deg, 0.0)
+        self.declare_parameter(PARAM_NAME_Poll_Rate_Hz, 50.0)
 
         # Get parameter values
         yaw_deg = self.get_parameter(
-            'orientation_yaw_deg').get_parameter_value().double_value
+            PARAM_NAME_R_Body_Imu_Yaw_Deg).get_parameter_value().double_value
         pitch_deg = self.get_parameter(
-            'orientation_pitch_deg').get_parameter_value().double_value
+            PARAM_NAME_R_Body_Imu_Pitch_Deg).get_parameter_value().double_value
         roll_deg = self.get_parameter(
-            'orientation_roll_deg').get_parameter_value().double_value
+            PARAM_NAME_R_Body_Imu_Roll_Deg).get_parameter_value().double_value
         self.poll_rate = self.get_parameter(
-            'poll_rate_hz').get_parameter_value().double_value
+            PARAM_NAME_Poll_Rate_Hz).get_parameter_value().double_value
 
         # Compute rotation matrix from sensor frame to robot frame
         self.rotation_matrix = self._euler_to_rotation_matrix(
