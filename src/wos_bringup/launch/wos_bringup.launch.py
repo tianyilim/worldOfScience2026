@@ -3,12 +3,12 @@
 import os
 
 from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.actions import LogInfo
+from launch.actions import DeclareLaunchArgument, LogInfo
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 
+from launch import LaunchDescription
 
 # Launch arguments for RPLidar A1
 channel_type = LaunchConfiguration('channel_type', default='serial')
@@ -155,10 +155,10 @@ def generate_launch_description():
                 name='rplidar_node',
                 parameters=[{'channel_type': channel_type,
                              'serial_port': serial_port,
-                             'serial_baudrate': serial_baudrate,
+                             'serial_baudrate': ParameterValue(serial_baudrate, value_type=int),
                              'frame_id': frame_id,
-                             'inverted': inverted,
-                             'angle_compensate': angle_compensate,
+                             'inverted': ParameterValue(inverted, value_type=bool),
+                             'angle_compensate': ParameterValue(angle_compensate, value_type=bool),
                              'scan_mode': scan_mode}],
                 output='screen'),
 
@@ -167,14 +167,14 @@ def generate_launch_description():
                 executable='motor_driver_node',
                 name='motor_driver_node',
                 parameters=[{
-                    'max_linear_vel': max_linear_vel,
-                    'max_angular_vel': max_angular_vel,
-                    'left_right_ratio': left_right_ratio,
-                    'wheelbase': wheelbase,
-                    'wheel_radius': wheel_radius,
-                    'wheel_angvel_to_pwm': wheel_angvel_to_pwm,
-                    'invert_left_motor': invert_left_motor,
-                    'invert_right_motor': invert_right_motor,
+                    'max_linear_vel': ParameterValue(max_linear_vel, value_type=float),
+                    'max_angular_vel': ParameterValue(max_angular_vel, value_type=float),
+                    'left_right_ratio': ParameterValue(left_right_ratio, value_type=float),
+                    'wheelbase': ParameterValue(wheelbase, value_type=float),
+                    'wheel_radius': ParameterValue(wheel_radius, value_type=float),
+                    'wheel_angvel_to_pwm': ParameterValue(wheel_angvel_to_pwm, value_type=float),
+                    'invert_left_motor': ParameterValue(invert_left_motor, value_type=bool),
+                    'invert_right_motor': ParameterValue(invert_right_motor, value_type=bool),
                 }],
                 output='screen'),
 
@@ -183,10 +183,10 @@ def generate_launch_description():
                 executable='imu_driver_node',
                 name='imu_driver_node',
                 parameters=[{
-                    'yaw_B_I_deg': yaw_b_i_deg,
-                    'pitch_B_I_deg': pitch_b_i_deg,
-                    'roll_B_I_deg': roll_b_i_deg,
-                    'freq_hz': freq_hz,
+                    'yaw_B_I_deg': ParameterValue(yaw_b_i_deg, value_type=float),
+                    'pitch_B_I_deg': ParameterValue(pitch_b_i_deg, value_type=float),
+                    'roll_B_I_deg': ParameterValue(roll_b_i_deg, value_type=float),
+                    'freq_hz': ParameterValue(freq_hz, value_type=float),
                 }],
                 output='screen'),
         ])
