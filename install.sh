@@ -24,7 +24,8 @@ sudo usermod -aG dialout "$USER"
 python3 -m pip install --upgrade pip --break-system-packages
 python3 -m pip install --break-system-packages catkin_pkg \
     smbus numpy \
-    adafruit-circuitpython-bno055 adafruit-blinka
+    adafruit-circuitpython-bno055 adafruit-blinka \
+    RPi.GPIO
 
 # Build the workspace. The CMake arg ensures that colcon/cmake uses the venv's Python, and not any other python exe from
 # e.g conda.

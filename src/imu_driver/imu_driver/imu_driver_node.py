@@ -40,7 +40,7 @@ class BNO055DriverNode(Node):
         # Initialize BNO055 sensor
         try:
             i2c = busio.I2C(board.SCL, board.SDA)
-            self.sensor = adafruit_bno055.BNO055_I2C(i2c_bus=i2c)
+            self.sensor = adafruit_bno055.BNO055_I2C(i2c)
             self.get_logger().info('BNO055 initialized successfully')
         except Exception as e:
             self.get_logger().error(f'Failed to initialize BNO055: {e}')
