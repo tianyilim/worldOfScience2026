@@ -11,7 +11,12 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
     ],
-    install_requires=['setuptools'],
+    install_requires=[
+        'setuptools',
+        'numpy',
+        'adafruit-circuitpython-bno055',
+        'adafruit-blinka',
+    ],
     zip_safe=True,
     maintainer='tianyi',
     maintainer_email='0.tianyi.lim@gmail.com',

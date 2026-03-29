@@ -7,6 +7,18 @@
   <maintainer email="0.tianyi.lim@gmail.com">tianyi</maintainer>
   <license>MIT</license>
 
+  <!-- Build tool -->
+  <build_type>ament_python</build_type>
+
+  <!-- Runtime dependencies -->
+  <depend>rclpy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+
+  <!-- Python package dependencies (installed via setup.py) -->
+  <!-- numpy, adafruit-circuitpython-bno055, adafruit-circuitpython-busio -->
+
+  <!-- Testing dependencies -->
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
