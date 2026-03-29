@@ -16,21 +16,26 @@ class BNO055DriverNode(Node):
 
         # Declare parameters
         # yaw, pitch, roll in degrees
-        self.declare_parameter('orientation_ypr', [0.0, 0.0, 0.0])
+        self.declare_parameter('orientation_yaw_deg', 0.0)
+        self.declare_parameter('orientation_pitch_deg', 0.0)
+        self.declare_parameter('orientation_roll_deg', 0.0)
         self.declare_parameter('poll_rate_hz', 50.0)
 
         # Get parameter values
-        ypr = self.get_parameter('orientation_ypr').value
-        self.poll_rate = self.get_parameter('poll_rate_hz').value
-
-        # Store orientation as euler angles (in radians) for rotation matrix calculation
-        self.yaw = np.radians(ypr[0])
-        self.pitch = np.radians(ypr[1])
-        self.roll = np.radians(ypr[2])
+        yaw_deg = self.get_parameter(
+            'orientation_yaw_deg').get_parameter_value().double_value
+        pitch_deg = self.get_parameter(
+            'orientation_pitch_deg').get_parameter_value().double_value
+        roll_deg = self.get_parameter(
+            'orientation_roll_deg').get_parameter_value().double_value
+        self.poll_rate = self.get_parameter(
+            'poll_rate_hz').get_parameter_value().double_value
 
         # Compute rotation matrix from sensor frame to robot frame
         self.rotation_matrix = self._euler_to_rotation_matrix(
-            self.roll, self.pitch, self.yaw)
+            np.radians(yaw_deg),
+            np.radians(pitch_deg),
+            np.radians(roll_deg))
 
         # Initialize BNO055 sensor
         try:
@@ -42,7 +47,7 @@ class BNO055DriverNode(Node):
             raise
 
         # Create publisher for IMU messages
-        self.imu_publisher = self.create_publisher(Imu, '/imu', 10)
+        self.imu_publisher = self.create_publisher(Imu, '/imu', 5)
 
         # Create timer for periodic reading
         period = 1.0 / self.poll_rate
@@ -51,7 +56,7 @@ class BNO055DriverNode(Node):
         self.get_logger().info(
             f'IMU driver node started at {self.poll_rate} Hz')
 
-    def _euler_to_rotation_matrix(self, roll, pitch, yaw):
+    def _euler_to_rotation_matrix(self, roll: float, pitch: float, yaw: float):
         """
         Convert Euler angles (roll, pitch, yaw) to rotation matrix.
         Uses ZYX convention (yaw-pitch-roll).
@@ -65,28 +70,22 @@ class BNO055DriverNode(Node):
             3x3 rotation matrix (numpy array)
         """
         # Rotation matrices for each axis
-        Rz = np.array([
-            [np.cos(yaw), -np.sin(yaw), 0],
-            [np.sin(yaw), np.cos(yaw), 0],
-            [0, 0, 1]
-        ])
+        Rz = np.array([[np.cos(yaw), -np.sin(yaw), 0],
+                       [np.sin(yaw), np.cos(yaw), 0],
+                       [0, 0, 1]])
 
-        Ry = np.array([
-            [np.cos(pitch), 0, np.sin(pitch)],
-            [0, 1, 0],
-            [-np.sin(pitch), 0, np.cos(pitch)]
-        ])
+        Ry = np.array([[np.cos(pitch), 0, np.sin(pitch)],
+                       [0, 1, 0],
+                       [-np.sin(pitch), 0, np.cos(pitch)]])
 
-        Rx = np.array([
-            [1, 0, 0],
-            [0, np.cos(roll), -np.sin(roll)],
-            [0, np.sin(roll), np.cos(roll)]
-        ])
+        Rx = np.array([[1, 0, 0],
+                       [0, np.cos(roll), -np.sin(roll)],
+                       [0, np.sin(roll), np.cos(roll)]])
 
         # Combined rotation: R = Rz * Ry * Rx
         return Rz @ Ry @ Rx
 
-    def _transform_vector(self, vector):
+    def _transform_vector(self, vector: np.ndarray) -> np.ndarray:
         """
         Transform a 3D vector from sensor frame to robot frame.
 
@@ -107,9 +106,12 @@ class BNO055DriverNode(Node):
             gravity = self.sensor.gravity  # (x, y, z) in m/s^2
             # (x, y, z) in m/s^2
             linear_accel = self.sensor.linear_acceleration
-            gyro = self.sensor.gyro  # (x, y, z) in rad/s
+            # (x, y, z) in rad/s
+            gyro = self.sensor.gyro
+            # (x, y, z, w)
+            quat = self.sensor.quaternion
 
-            if euler is None or gravity is None or linear_accel is None or gyro is None:
+            if euler is None or gravity is None or linear_accel is None or gyro is None or quat is None:
                 self.get_logger().warn('Received None from sensor, skipping this reading')
                 return
 
@@ -117,12 +119,13 @@ class BNO055DriverNode(Node):
             accel_robot = self._transform_vector(linear_accel)
             gyro_robot = self._transform_vector(gyro)
 
-            # Get quaternion for IMU message (BNO055 provides this)
-            quat = self.sensor.quaternion  # Returns (x, y, z, w)
+            self.get_logger().info(
+                f"Accel: [{accel_robot[0]:.2f}, {accel_robot[1]:.2f}, {accel_robot[2]:.2f}] m/s^2")
+            self.get_logger().info(
+                f"Gyro: [{gyro_robot[0]:.2f}, {gyro_robot[1]:.2f}, {gyro_robot[2]:.2f}] rad/s")
 
-            if quat is None:
-                self.get_logger().warn('Received None quaternion from sensor')
-                return
+            # For now let's try this
+            return
 
             # Create and populate IMU message
             imu_msg = Imu()
