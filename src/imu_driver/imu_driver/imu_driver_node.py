@@ -3,7 +3,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Imu
 from geometry_msgs.msg import Vector3
 import numpy as np
-from adafruit_bno055 import Adafruit_BNO055
+import adafruit_bno055
 import board
 import busio
 
@@ -40,7 +40,7 @@ class BNO055DriverNode(Node):
         # Initialize BNO055 sensor
         try:
             i2c = busio.I2C(board.SCL, board.SDA)
-            self.sensor = Adafruit_BNO055.Adafruit_BNO055(i2c_bus=i2c)
+            self.sensor = adafruit_bno055.BNO055_I2C(i2c_bus=i2c)
             self.get_logger().info('BNO055 initialized successfully')
         except Exception as e:
             self.get_logger().error(f'Failed to initialize BNO055: {e}')
