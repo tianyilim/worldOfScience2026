@@ -15,8 +15,8 @@ setup(
     zip_safe=True,
     maintainer='tianyi',
     maintainer_email='0.tianyi.lim@gmail.com',
-    description='Example Motor Driver Package',
-    license='Apache-2.0',
+    description='Motor Driver interfacing with DFRobot DC Motor Driver HAT.',
+    license='MIT',
     extras_require={
         'test': [
             'pytest',
