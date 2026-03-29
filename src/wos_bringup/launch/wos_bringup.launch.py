@@ -11,9 +11,9 @@ from launch_ros.actions import Node
 
 # RPLidar A1 constants
 LIDAR_CHANNEL_TYPE = 'serial'
-LIDAR_BAUDRATE = '115200'
-LIDAR_IS_INVERTED = 'false'
-LIDAR_TO_ANGLE_COMPENSATE = 'true'
+LIDAR_BAUDRATE = 115200
+LIDAR_IS_INVERTED = False
+LIDAR_TO_ANGLE_COMPENSATE = True
 LIDAR_SCAN_MODE = 'Sensitivity'
 
 
