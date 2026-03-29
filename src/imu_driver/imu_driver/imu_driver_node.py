@@ -108,10 +108,8 @@ class BNO055DriverNode(Node):
             linear_accel = self.sensor.linear_acceleration
             # (x, y, z) in rad/s
             gyro = self.sensor.gyro
-            # (x, y, z, w)
-            quat = self.sensor.quaternion
 
-            if euler is None or gravity is None or linear_accel is None or gyro is None or quat is None:
+            if euler is None or gravity is None or linear_accel is None or gyro is None:
                 self.get_logger().warn('Received None from sensor, skipping this reading')
                 return
 
@@ -124,19 +122,10 @@ class BNO055DriverNode(Node):
             self.get_logger().info(
                 f"Gyro: [{gyro_robot[0]:.2f}, {gyro_robot[1]:.2f}, {gyro_robot[2]:.2f}] rad/s")
 
-            # For now let's try this
-            return
-
             # Create and populate IMU message
             imu_msg = Imu()
             imu_msg.header.stamp = self.get_clock().now().to_msg()
-            imu_msg.header.frame_id = 'imu_link'
-
-            # Set orientation (quaternion)
-            imu_msg.orientation.x = float(quat[0])
-            imu_msg.orientation.y = float(quat[1])
-            imu_msg.orientation.z = float(quat[2])
-            imu_msg.orientation.w = float(quat[3])
+            imu_msg.header.frame_id = 'base_link'
 
             # Set angular velocity
             imu_msg.angular_velocity.x = float(gyro_robot[0])
@@ -147,15 +136,6 @@ class BNO055DriverNode(Node):
             imu_msg.linear_acceleration.x = float(accel_robot[0])
             imu_msg.linear_acceleration.y = float(accel_robot[1])
             imu_msg.linear_acceleration.z = float(accel_robot[2])
-
-            # Set covariance (diagonal uncertainty values)
-            # These can be tuned based on sensor specifications
-            imu_msg.orientation_covariance = [
-                0.0015] * 9  # ~0.9 degree std dev
-            imu_msg.angular_velocity_covariance = [
-                0.001] * 9  # rad/s covariance
-            imu_msg.linear_acceleration_covariance = [
-                0.01] * 9  # m/s^2 covariance
 
             # Publish message
             self.imu_publisher.publish(imu_msg)
