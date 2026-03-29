@@ -13,27 +13,27 @@ from launch import LaunchDescription
 # Launch arguments for RPLidar A1
 channel_type = LaunchConfiguration('channel_type', default='serial')
 serial_port = LaunchConfiguration('serial_port', default='/dev/ttyUSB0')
-serial_baudrate = LaunchConfiguration('serial_baudrate', default='115200')
+serial_baudrate = LaunchConfiguration('serial_baudrate', default=115200)
 frame_id = LaunchConfiguration('frame_id', default='laser')
-inverted = LaunchConfiguration('inverted', default='false')
-angle_compensate = LaunchConfiguration('angle_compensate', default='true')
+inverted = LaunchConfiguration('inverted', default=False)
+angle_compensate = LaunchConfiguration('angle_compensate', default=True)
 scan_mode = LaunchConfiguration('scan_mode', default='Sensitivity')
 
 # Launch arguments for motor driver
-max_linear_vel = LaunchConfiguration('max_linear_vel', default='1.0')
-max_angular_vel = LaunchConfiguration('max_angular_vel', default='2.5')
-left_right_ratio = LaunchConfiguration('left_right_ratio', default='1.0')
-wheelbase = LaunchConfiguration('wheelbase', default='0.12')
-wheel_radius = LaunchConfiguration('wheel_radius', default='0.032')
-wheel_angvel_to_pwm = LaunchConfiguration('wheel_angvel_to_pwm', default='1.0')
-invert_left_motor = LaunchConfiguration('invert_left_motor', default='false')
-invert_right_motor = LaunchConfiguration('invert_right_motor', default='false')
+max_linear_vel = LaunchConfiguration('max_linear_vel', default=1.0)
+max_angular_vel = LaunchConfiguration('max_angular_vel', default=2.5)
+left_right_ratio = LaunchConfiguration('left_right_ratio', default=1.0)
+wheelbase = LaunchConfiguration('wheelbase', default=0.12)
+wheel_radius = LaunchConfiguration('wheel_radius', default=0.032)
+wheel_angvel_to_pwm = LaunchConfiguration('wheel_angvel_to_pwm', default=1.0)
+invert_left_motor = LaunchConfiguration('invert_left_motor', default=False)
+invert_right_motor = LaunchConfiguration('invert_right_motor', default=False)
 
 # Launch arguments for IMU driver
-yaw_b_i_deg = LaunchConfiguration('yaw_B_I_deg', default='180.0')
-pitch_b_i_deg = LaunchConfiguration('pitch_B_I_deg', default='0.0')
-roll_b_i_deg = LaunchConfiguration('roll_B_I_deg', default='180.0')
-freq_hz = LaunchConfiguration('freq_hz', default='100.0')
+yaw_b_i_deg = LaunchConfiguration('yaw_B_I_deg', default=180.0)
+pitch_b_i_deg = LaunchConfiguration('pitch_B_I_deg', default=0.0)
+roll_b_i_deg = LaunchConfiguration('roll_B_I_deg', default=180.0)
+freq_hz = LaunchConfiguration('freq_hz', default=100.0)
 
 
 def get_lidar_launch_arguments():
