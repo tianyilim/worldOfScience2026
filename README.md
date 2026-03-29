@@ -104,19 +104,20 @@ Additional software:
 
 ### RPi
 
-1. RPi Driver:
+Overall launchfile:
 
-   ```bash
-   ros2 launch rplidar_ros rplidar_a1_launch.py
-   ```
+```bash
+ros2 launch wos_bringup wos_bringup.launch.py
+```
 
-2. Motor Driver:
+This launches the following:
 
-   ```bash
-   ros2 run motor_driver motor_driver_node
-   ```
-
-3. SLAM
+1. RPi Driver
+2. Motor Driver
+3. IMU Driver
+4. Scan Deskew
+5. Odometry
+6. SLAM
 
 ### Host PC
 
