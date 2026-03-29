@@ -3,7 +3,9 @@
 import os
 
 from ament_index_python.packages import get_package_share_directory
-from launch.actions import DeclareLaunchArgument, LogInfo
+from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
+                            LogInfo)
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -196,4 +198,19 @@ def generate_launch_description():
                 arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'laser'],
                 name='base_link_laser_tf',
                 output='screen'),
+
+            Node(
+                package='rf2o_laser_odometry',
+                executable='rf2o_laser_odometry_node',
+                name='rf2o_laser_odometry',
+                output='screen',
+                parameters=[{
+                    'laser_scan_topic': '/scan',
+                    'odom_topic': '/odom',
+                    'publish_tf': True,
+                    'base_frame_id': 'base_link',
+                    'odom_frame_id': 'odom',
+                    'init_pose_from_topic': '',
+                    'freq': 10.0}],
+            )
         ])
