@@ -189,4 +189,11 @@ def generate_launch_description():
                     'freq_hz': ParameterValue(freq_hz, value_type=float),
                 }],
                 output='screen'),
+
+            Node(
+                package='tf2_ros',
+                executable='static_transform_publisher',
+                arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'laser'],
+                name='base_link_laser_tf',
+                output='screen'),
         ])
