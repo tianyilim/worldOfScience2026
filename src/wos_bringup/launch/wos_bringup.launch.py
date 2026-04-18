@@ -195,8 +195,9 @@ def generate_launch_description():
             Node(
                 package='tf2_ros',
                 executable='static_transform_publisher',
-                arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'laser'],
-                name='base_link_laser_tf',
+                arguments=['0', '0', '0', '0', '0',
+                           '0', 'base_footprint', 'laser'],
+                name='base_footprint_laser_tf',
                 output='screen'),
 
             Node(
@@ -208,7 +209,7 @@ def generate_launch_description():
                     'laser_scan_topic': '/scan',
                     'odom_topic': '/odom',
                     'publish_tf': True,
-                    'base_frame_id': 'base_link',
+                    'base_frame_id': 'base_footprint',
                     'odom_frame_id': 'odom',
                     'init_pose_from_topic': '',
                     'freq': 10.0}],
