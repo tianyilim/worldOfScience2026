@@ -22,7 +22,7 @@ angle_compensate = LaunchConfiguration('angle_compensate', default=True)
 scan_mode = LaunchConfiguration('scan_mode', default='Sensitivity')
 
 # Launch arguments for motor driver
-max_linear_vel = LaunchConfiguration('max_linear_vel', default=1.0)
+max_linear_vel = LaunchConfiguration('max_linear_vel', default=0.25)
 max_angular_vel = LaunchConfiguration('max_angular_vel', default=2.5)
 left_right_ratio = LaunchConfiguration('left_right_ratio', default=1.0)
 wheelbase = LaunchConfiguration('wheelbase', default=0.12)
