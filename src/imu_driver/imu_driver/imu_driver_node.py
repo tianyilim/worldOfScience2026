@@ -123,9 +123,9 @@ class BNO055DriverNode(Node):
             accel_robot = self._transform_vector(linear_accel)
             gyro_robot = self._transform_vector(gyro)
 
-            self.get_logger().info(
+            self.get_logger().debug(
                 f"Accel: [{accel_robot[0]:.2f}, {accel_robot[1]:.2f}, {accel_robot[2]:.2f}] m/s^2")
-            self.get_logger().info(
+            self.get_logger().debug(
                 f"Gyro: [{gyro_robot[0]:.2f}, {gyro_robot[1]:.2f}, {gyro_robot[2]:.2f}] rad/s")
 
             # Create and populate IMU message
