@@ -15,6 +15,10 @@ setup(
             'share/' + package_name + '/launch',
             glob('launch/*.launch.py') + glob('launch/*.launch.xml')
         ),
+        (
+            'share/' + package_name + '/config',
+            glob('config/*.yaml')
+        ),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
