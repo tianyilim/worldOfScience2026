@@ -3,8 +3,8 @@ teleop_twist_joy:
     require_enable_button: false
 
     axis_linear.x: 1 # Left thumb stick vertical
-    scale_linear.x: 0.15
-    scale_linear_turbo.x: 0.25
+    scale_linear.x: 0.1
+    scale_linear_turbo.x: 0.15
 
     axis_angular.yaw: 0 # Left thumb stick horizontal
     scale_angular.yaw: 0.75
