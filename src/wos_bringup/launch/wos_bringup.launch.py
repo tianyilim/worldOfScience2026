@@ -6,9 +6,10 @@ from ament_index_python.packages import get_package_share_directory
 from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
                             LogInfo)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
+from launch_ros.substitutions import FindPackageShare
 
 from launch import LaunchDescription
 
@@ -36,6 +37,13 @@ yaw_b_i_deg = LaunchConfiguration('yaw_B_I_deg', default=180.0)
 pitch_b_i_deg = LaunchConfiguration('pitch_B_I_deg', default=0.0)
 roll_b_i_deg = LaunchConfiguration('roll_B_I_deg', default=180.0)
 freq_hz = LaunchConfiguration('freq_hz', default=100.0)
+
+# Launch arguments for SLAM
+slam_params_file = LaunchConfiguration(
+    'slam_params_file',
+    default=PathJoinSubstitution([
+        FindPackageShare('wos_bringup'),
+        'config', 'slam_online_async.yaml']))
 
 
 def get_lidar_launch_arguments():
@@ -145,6 +153,16 @@ def get_imu_driver_launch_arguments():
 
 
 def generate_launch_description():
+    # Include SLAM Toolbox Launch
+    slam_toolbox_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory('slam_toolbox'),
+                         'launch', 'online_async_launch.py')
+        ),
+        launch_arguments={
+            'slam_params_file': slam_params_file
+        }.items()
+    )
 
     return LaunchDescription(
         get_lidar_launch_arguments() +
@@ -213,5 +231,6 @@ def generate_launch_description():
                     'odom_frame_id': 'odom',
                     'init_pose_from_topic': '',
                     'freq': 10.0}],
-            )
+            ),
+            slam_toolbox_launch
         ])
