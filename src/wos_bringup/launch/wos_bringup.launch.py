@@ -1,18 +1,23 @@
 #!/usr/bin/env python3
 
 import os
-import sys
 
 from ament_index_python.packages import get_package_share_directory
-from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
-                            LogInfo)
+from launch.actions import (DeclareLaunchArgument, GroupAction,
+                            IncludeLaunchDescription)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-from launch_ros.actions import Node
+from launch_ros.actions import Node, PushRosNamespace
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 
 from launch import LaunchDescription
+
+rpi_id = os.environ.get('RPI_ID')
+if not rpi_id:
+    raise RuntimeError('RPI_ID environment variable must be set')
+
+robot_namespace = f'/rpi_{rpi_id}'
 
 # Launch arguments for RPLidar A1
 channel_type = LaunchConfiguration('channel_type', default='serial')
@@ -198,11 +203,9 @@ def generate_launch_description():
         }.items()
     )
 
-    return LaunchDescription(
-        get_lidar_launch_arguments() +
-        get_motor_driver_launch_arguments() +
-        get_imu_driver_launch_arguments() +
-        [
+    robot_nodes = GroupAction(
+        actions=[
+            PushRosNamespace(robot_namespace),
             Node(
                 package='rplidar_ros',
                 executable='rplidar_node',
@@ -279,4 +282,12 @@ def generate_launch_description():
                     'freq': 10.0}],
             ),
             slam_toolbox_launch
+        ])
+
+    return LaunchDescription(
+        get_lidar_launch_arguments() +
+        get_motor_driver_launch_arguments() +
+        get_imu_driver_launch_arguments() +
+        [
+            robot_nodes
         ])
