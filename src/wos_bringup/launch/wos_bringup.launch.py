@@ -207,6 +207,7 @@ def generate_launch_description():
             # Remap scan and map topic to be relative to namespace
             SetRemap(src='/scan', dst='scan'),
             SetRemap(src='/map', dst='map'),
+
             Node(
                 package='rplidar_ros',
                 executable='rplidar_node',
@@ -218,7 +219,7 @@ def generate_launch_description():
                              'inverted': ParameterValue(inverted, value_type=bool),
                              'angle_compensate': ParameterValue(angle_compensate, value_type=bool),
                              'scan_mode': scan_mode}],
-                output='own_log'),
+                output='screen'),
 
             Node(
                 package='motor_driver',
@@ -246,7 +247,7 @@ def generate_launch_description():
                     'roll_B_I_deg': ParameterValue(roll_b_i_deg, value_type=float),
                     'freq_hz': ParameterValue(freq_hz, value_type=float),
                 }],
-                output='own_log'),
+                output='screen'),
 
             Node(
                 package='servo_driver',
@@ -258,7 +259,7 @@ def generate_launch_description():
                     'min_angle': ParameterValue(min_angle, value_type=float),
                     'joy_angle_increment': ParameterValue(joy_angle_increment, value_type=float),
                 }],
-                output='own_log'),
+                output='screen'),
 
             Node(
                 package='tf2_ros',
@@ -266,7 +267,7 @@ def generate_launch_description():
                 arguments=['0', '0', '0', '0', '0',
                            '0', 'base_footprint', 'laser'],
                 name='base_footprint_laser_tf',
-                output='own_log'),
+                output='screen'),
 
             Node(
                 package='rf2o_laser_odometry',
@@ -289,6 +290,7 @@ def generate_launch_description():
     return LaunchDescription(
         get_lidar_launch_arguments() +
         get_motor_driver_launch_arguments() +
+        get_servo_driver_launch_arguments() +
         get_imu_driver_launch_arguments() +
         [
             robot_nodes
