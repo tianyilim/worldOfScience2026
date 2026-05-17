@@ -52,3 +52,6 @@ colcon build --symlink-install
     echo "export ROS_DOMAIN_ID=$RPI_ID"
     echo "ROS_DOMAIN_ID is set to $ROS_DOMAIN_ID"
 } >>~/.bashrc
+
+# Add to tmux.conf
+cp ./rpi_flashing/tmux.conf ~/.tmux.conf
