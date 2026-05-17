@@ -283,8 +283,6 @@ def generate_launch_description():
                     'init_pose_from_topic': '',
                     'freq': 10.0}],
             ),
-
-            slam_toolbox_launch
         ])
 
     return LaunchDescription(
@@ -293,5 +291,6 @@ def generate_launch_description():
         get_servo_driver_launch_arguments() +
         get_imu_driver_launch_arguments() +
         [
-            robot_nodes
+            robot_nodes,
+            slam_toolbox_launch
         ])
