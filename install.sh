@@ -1,12 +1,25 @@
 #!/bin/bash
 set -e
 
-# Check that an argument is specified.
-if [ $# -eq 0 ]; then
-    echo "Usage: $0 <RPI_ID>"
+if [ -z "$RPI_ID" ]; then
+    # RPI_ID is empty or completely unset.
+    # Check that an argument is specified.
+    if [ $# -eq 0 ]; then
+        echo "Usage: $0 <RPI_ID>"
+        exit 1
+    fi
+
+    # Argument is specified.
+    RPI_ID="$1"
+    echo "RPI_ID is set to '$RPI_ID' from argument."
+else
+    echo "RPI_ID is set to '$RPI_ID' from env variables."
+fi
+
+if [[ ! $RPI_ID =~ ^[0-9]+$ ]] || [ "$RPI_ID" -lt 1 ] || [ "$RPI_ID" -gt 100 ]; then
+    error_echo "Error: RPI_ID provided '$RPI_ID' must be an integer between 1 and 100."
     exit 1
 fi
-RPI_ID="$1"
 
 git submodule update --init --recursive
 

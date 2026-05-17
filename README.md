@@ -86,6 +86,7 @@ TX errors 0 dropped 0 overruns 0 carrier 0 collisions 0
 
    ```bash
    git clone https://github.com/tianyilim/worldOfScience2026.git
+   cd worldOfScience2026
    ```
 
 3. Run the installation script in this folder: [`./install.sh <RPI_ID>`](./install.sh).
@@ -145,4 +146,3 @@ You can identify this by doing `ros2 node list` and seeing if the list of nodes 
    ```bash
    rviz2 -d ./viz/worldOfScienceViz.rviz
    ```
-

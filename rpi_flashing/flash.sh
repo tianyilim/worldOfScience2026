@@ -205,6 +205,8 @@ chpasswd:
 runcmd:
   - systemctl enable --now ssh
   - ufw allow ssh  # Ensures firewall doesn't block you
+  # Inject your .bashrc configurations here:
+  - echo "export RPI_ID=${ID}" >> /home/rpi_${ID}/.bashrc
 EOF
 
 # Create network-config (WiFi + Static IP)
