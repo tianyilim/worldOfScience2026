@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 
 from ament_index_python.packages import get_package_share_directory
 from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
@@ -37,6 +38,12 @@ yaw_b_i_deg = LaunchConfiguration('yaw_B_I_deg', default=180.0)
 pitch_b_i_deg = LaunchConfiguration('pitch_B_I_deg', default=0.0)
 roll_b_i_deg = LaunchConfiguration('roll_B_I_deg', default=180.0)
 freq_hz = LaunchConfiguration('freq_hz', default=100.0)
+
+# Launch arguments for servo driver
+servo_pin = LaunchConfiguration('servo_pin', default='11')
+max_angle = LaunchConfiguration('max_angle', default='180')
+min_angle = LaunchConfiguration('min_angle', default='0')
+joy_angle_increment = LaunchConfiguration('joy_angle_increment', default='5')
 
 # Launch arguments for SLAM
 slam_params_file = LaunchConfiguration(
@@ -152,7 +159,34 @@ def get_imu_driver_launch_arguments():
     ]
 
 
+def get_servo_driver_launch_arguments():
+    return [
+        DeclareLaunchArgument(
+            'servo_pin',
+            default_value='11',
+            description='GPIO pin number for servo output'),
+
+        DeclareLaunchArgument(
+            'max_angle',
+            default_value='180',
+            description='Maximum angle for the servo (degrees)'),
+
+        DeclareLaunchArgument(
+            'min_angle',
+            default_value='0',
+            description='Minimum angle for the servo (degrees)'),
+
+        DeclareLaunchArgument(
+            'joy_angle_increment',
+            default_value='5',
+            description='Angle increment for joystick control (degrees)'),
+    ]
+
+
 def generate_launch_description():
+
+    # Set namespace prefix for all nodes
+
     # Include SLAM Toolbox Launch
     slam_toolbox_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -180,7 +214,7 @@ def generate_launch_description():
                              'inverted': ParameterValue(inverted, value_type=bool),
                              'angle_compensate': ParameterValue(angle_compensate, value_type=bool),
                              'scan_mode': scan_mode}],
-                output='screen'),
+                output='own_log'),
 
             Node(
                 package='motor_driver',
@@ -208,7 +242,19 @@ def generate_launch_description():
                     'roll_B_I_deg': ParameterValue(roll_b_i_deg, value_type=float),
                     'freq_hz': ParameterValue(freq_hz, value_type=float),
                 }],
-                output='screen'),
+                output='own_log'),
+
+            Node(
+                package='servo_driver',
+                executable='servo_driver_node',
+                name='servo_driver_node',
+                parameters=[{
+                    'servo_pin': ParameterValue(servo_pin, value_type=float),
+                    'max_angle': ParameterValue(max_angle, value_type=float),
+                    'min_angle': ParameterValue(min_angle, value_type=float),
+                    'joy_angle_increment': ParameterValue(joy_angle_increment, value_type=float),
+                }],
+                output='own_log'),
 
             Node(
                 package='tf2_ros',
@@ -216,7 +262,7 @@ def generate_launch_description():
                 arguments=['0', '0', '0', '0', '0',
                            '0', 'base_footprint', 'laser'],
                 name='base_footprint_laser_tf',
-                output='screen'),
+                output='own_log'),
 
             Node(
                 package='rf2o_laser_odometry',
