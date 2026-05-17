@@ -11,7 +11,7 @@ if [ -z "$RPI_ID" ]; then
 
     # Argument is specified.
     RPI_ID="$1"
-    echo "RPI_ID is set to '$RPI_ID' from argument."
+    echo "RPI_ID is set to '$RPI_ID' from argument."    
 else
     echo "RPI_ID is set to '$RPI_ID' from env variables."
 fi
@@ -46,7 +46,7 @@ colcon build --symlink-install
 
 # Add to .bashrc to auto-source this workspace and to set the correct ROS_DOMAIN_ID
 {
-    echo "source /opt/ros/humble/setup.bash"
+    echo "source /opt/ros/jazzy/setup.bash"
     echo "source $(pwd)/install/setup.bash"
     echo "export ROS_DOMAIN_ID=$RPI_ID"
     echo "ROS_DOMAIN_ID is set to $ROS_DOMAIN_ID"
