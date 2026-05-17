@@ -189,9 +189,6 @@ def get_servo_driver_launch_arguments():
 
 
 def generate_launch_description():
-
-    # Set namespace prefix for all nodes
-
     # Include SLAM Toolbox Launch
     slam_toolbox_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -205,6 +202,7 @@ def generate_launch_description():
 
     robot_nodes = GroupAction(
         actions=[
+            # Set namespace prefix for all nodes
             PushRosNamespace(robot_namespace),
             # Remap scan and map topic to be relative to namespace
             SetRemap(src='/scan', dst='scan'),
@@ -284,6 +282,7 @@ def generate_launch_description():
                     'init_pose_from_topic': '',
                     'freq': 10.0}],
             ),
+
             slam_toolbox_launch
         ])
 
