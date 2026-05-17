@@ -7,7 +7,7 @@ from launch.actions import (DeclareLaunchArgument, GroupAction,
                             IncludeLaunchDescription)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-from launch_ros.actions import Node, PushRosNamespace
+from launch_ros.actions import Node, PushRosNamespace, SetRemap
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 
@@ -206,6 +206,9 @@ def generate_launch_description():
     robot_nodes = GroupAction(
         actions=[
             PushRosNamespace(robot_namespace),
+            # Remap scan and map topic to be relative to namespace
+            SetRemap(src='/scan', dst='scan'),
+            SetRemap(src='/map', dst='map'),
             Node(
                 package='rplidar_ros',
                 executable='rplidar_node',
