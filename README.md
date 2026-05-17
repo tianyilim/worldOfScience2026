@@ -126,10 +126,11 @@ This launches the following:
 
 1. RPi Driver
 2. Motor Driver
-3. IMU Driver
-4. Scan Deskew
-5. Odometry
-6. SLAM
+3. Servo Driver
+4. IMU Driver
+5. Scan Deskew
+6. Odometry
+7. SLAM
 
 ### Host PC
 
@@ -146,8 +147,24 @@ You can identify this by doing `ros2 node list` and seeing if the list of nodes 
    ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p speed:=0.05 -p turn:=2.5
    ```
 
-2. RViz:
+2. Teleop from controller:
+
+   ```bash
+   RPI_ID=<fill in here>
+   export ROS_DOMAIN_ID=$RPI_ID
+   # Set controller namespace correctly
+   ros2 launch wos_bringup teleop_joy.launch.xml namespace:=rpi_${RPI_ID}
+   ```
+
+   Note that controllers should not be plugged into TechNet devices.
+
+3. RViz:
 
    ```bash
    rviz2 -d ./viz/worldOfScienceViz.rviz
    ```
+
+# TODOs:
+
+- [ ] Debug launchfile issue launching two odometry nodes
+- [ ] Set sensible defaults for motor RPM, currently it's possible for RPi to brown itself out with the current defaults!
