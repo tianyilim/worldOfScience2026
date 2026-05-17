@@ -254,10 +254,10 @@ def generate_launch_description():
                 executable='servo_driver_node',
                 name='servo_driver_node',
                 parameters=[{
-                    'servo_pin': ParameterValue(servo_pin, value_type=float),
-                    'max_angle': ParameterValue(max_angle, value_type=float),
-                    'min_angle': ParameterValue(min_angle, value_type=float),
-                    'joy_angle_increment': ParameterValue(joy_angle_increment, value_type=float),
+                    'servo_pin': ParameterValue(servo_pin, value_type=int),
+                    'max_angle': ParameterValue(max_angle, value_type=int),
+                    'min_angle': ParameterValue(min_angle, value_type=int),
+                    'joy_angle_increment': ParameterValue(joy_angle_increment, value_type=int),
                 }],
                 output='screen'),
 
