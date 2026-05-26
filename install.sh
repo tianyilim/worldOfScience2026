@@ -27,11 +27,13 @@ git submodule update --init --recursive
 sudo apt update
 sudo apt install -y python3-smbus python3-venv python3-pip \
     net-tools network-manager build-essential cmake \
-    python3-colcon-common-extensions ros-jazzy-slam-toolbox
+    python3-colcon-common-extensions ros-jazzy-slam-toolbox \
+    ros-jazzy-joy ros-jazzy-teleop-twist-joy
 
-# Permissions for I2C and serial
+# Permissions for I2C, serial, and input (for joystick)
 sudo usermod -aG i2c "$USER"
 sudo usermod -aG dialout "$USER"
+sudo usermod -aG input "$USER"
 
 # Install relevant pip packages
 python3 -m pip install --upgrade pip --break-system-packages
