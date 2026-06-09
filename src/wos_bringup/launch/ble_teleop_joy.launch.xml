@@ -1,8 +1,8 @@
 <launch>
     <arg name="joy_dev" default="/dev/input/js0" />
-    <arg name="config_filepath" default="$(find-pkg-share wos_bringup)/config/xbox.yaml" />
+    <arg name="config_filepath" default="$(find-pkg-share wos_bringup)/config/ble_joy.yaml" />
     <arg name="joy_topic" default="joy" />
-    <arg name="namespace" default="rpi_11" />
+    <arg name="namespace" default="rpi_$(optenv RPI_ID 0)" />
 
     <node pkg="joy" exec="joy_node" name="joy_node" namespace="$(var namespace)">
         <param name="dev" value="$(var joy_dev)" />
