@@ -28,7 +28,8 @@ sudo apt update
 sudo apt install -y python3-smbus python3-venv python3-pip \
     net-tools network-manager build-essential cmake \
     python3-colcon-common-extensions ros-jazzy-slam-toolbox \
-    ros-jazzy-joy ros-jazzy-teleop-twist-joy
+    bluetooth bluez bluez-tools ranger magic tmux \
+    joystick ros-jazzy-joy ros-jazzy-teleop-twist-joy
 
 # Permissions for I2C, serial, and input (for joystick)
 sudo usermod -aG i2c "$USER"
