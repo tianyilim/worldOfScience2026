@@ -10,5 +10,5 @@
     scale_angular.yaw: 0.75
     scale_angular_turbo.yaw: 1.5
 
-    enable_button: 4 # Left shoulder
-    enable_turbo_button: 5 # Right shoulder
+    enable_button: 3 # Top button
+    enable_turbo_button: 1 # Bottom button
