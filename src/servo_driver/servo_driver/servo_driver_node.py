@@ -18,6 +18,8 @@ PARAM_NAME_OUT_PIN = 'out_pin'
 PARAM_NAME_MAX_ANGLE = 'max_angle'
 PARAM_NAME_MIN_ANGLE = 'min_angle'
 PARAM_NAME_JOY_ANGLE_INCREMENT = 'joy_angle_increment'
+PARAM_NAME_JOY_OPEN_BUTTON_INDEX = 'joy_open_button_index'
+PARAM_NAME_JOY_CLOSE_BUTTON_INDEX = 'joy_close_button_index'
 
 
 def angle_to_duty_cycle(angle: float) -> int:
@@ -49,6 +51,8 @@ class ServoDriverNode(Node):
         self.declare_parameter(PARAM_NAME_MAX_ANGLE, 180)
         self.declare_parameter(PARAM_NAME_MIN_ANGLE, 0)
         self.declare_parameter(PARAM_NAME_JOY_ANGLE_INCREMENT, 5)
+        self.declare_parameter(PARAM_NAME_JOY_OPEN_BUTTON_INDEX, 2)
+        self.declare_parameter(PARAM_NAME_JOY_CLOSE_BUTTON_INDEX, 0)
 
         # Get parameter values
         out_pin = self.get_parameter(
@@ -59,6 +63,10 @@ class ServoDriverNode(Node):
             PARAM_NAME_MIN_ANGLE).get_parameter_value().integer_value
         self.joy_angle_increment = self.get_parameter(
             PARAM_NAME_JOY_ANGLE_INCREMENT).get_parameter_value().integer_value
+        self.joy_open_button = self.get_parameter(
+            PARAM_NAME_JOY_OPEN_BUTTON_INDEX).get_parameter_value().integer_value
+        self.joy_close_button = self.get_parameter(
+            PARAM_NAME_JOY_CLOSE_BUTTON_INDEX).get_parameter_value().integer_value
 
         # Initialize PWM
         GPIO.setmode(GPIO.BOARD)
@@ -98,14 +106,14 @@ class ServoDriverNode(Node):
         angle_incr = self.joy_angle_increment
 
         if len(msg.axes) > 0:
-            LB_pressed = msg.buttons[6] == 1
-            RB_pressed = msg.buttons[7] == 1
+            close_pressed = msg.buttons[self.joy_close_button] == 1
+            open_pressed = msg.buttons[self.joy_open_button] == 1
 
-            if LB_pressed and not RB_pressed:
+            if close_pressed and not open_pressed:
                 # Decrease angle
                 new_angle = max(self.min_angle, self.curr_angle - angle_incr)
                 self.cmd_angle_callback(Int8(data=new_angle))
-            elif RB_pressed and not LB_pressed:
+            elif open_pressed and not close_pressed:
                 # Increase angle
                 new_angle = min(self.max_angle, self.curr_angle + angle_incr)
                 self.cmd_angle_callback(Int8(data=new_angle))
