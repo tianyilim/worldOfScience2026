@@ -87,14 +87,8 @@ TX errors 0 dropped 0 overruns 0 carrier 0 collisions 0
    ```bash
    git clone https://github.com/tianyilim/worldOfScience2026.git
    cd worldOfScience2026
-   ./install.sh # Should auto-detect the PI id from what was flashed earlier
+   ./first_time_setup.sh # Should auto-detect the PI id from what was flashed earlier
    ```
-
-> **NOTE**: If you are using a RPi 5 instead of the assumed RPi 4, you'll need to run the following:
-> ```bash
-> python3 -m pip uninstall RPi.GPIO
-> python3 -m pip install --break-system-packages rpi-lgpio
-> ```
 
 ## Dev PC Setup
 

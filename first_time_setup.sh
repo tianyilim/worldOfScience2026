@@ -40,9 +40,15 @@ sudo usermod -aG input "$USER"
 python3 -m pip install --upgrade pip --break-system-packages
 python3 -m pip install --break-system-packages catkin_pkg \
     smbus numpy \
-    adafruit-circuitpython-bno055 adafruit-blinka \
-    RPi.GPIO
-# If using RPi 5, install rpi-lgpio
+    adafruit-circuitpython-bno055 adafruit-blinka
+
+# If using RPi 5, install updated GPIO package
+model=$(tr -d '\0' < /proc/device-tree/model)
+if [[ "$model" == *"Raspberry Pi 5"* ]]; then
+    python3 -m pip install --break-system-packages rpi-lgpio
+else
+    python3 -m pip install --break-system-packages RPi.GPIO
+fi
 
 # Build the workspace. The CMake arg ensures that colcon/cmake uses the venv's Python, and not any other python exe from
 # e.g conda.
