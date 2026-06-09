@@ -98,8 +98,8 @@ class ServoDriverNode(Node):
         angle_incr = self.joy_angle_increment
 
         if len(msg.axes) > 0:
-            LB_pressed = msg.buttons[4] == 1
-            RB_pressed = msg.buttons[5] == 1
+            LB_pressed = msg.buttons[6] == 1
+            RB_pressed = msg.buttons[7] == 1
 
             if LB_pressed and not RB_pressed:
                 # Decrease angle

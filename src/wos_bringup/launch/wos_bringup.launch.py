@@ -34,7 +34,7 @@ max_angular_vel = LaunchConfiguration('max_angular_vel', default=2.5)
 left_right_ratio = LaunchConfiguration('left_right_ratio', default=1.0)
 wheelbase = LaunchConfiguration('wheelbase', default=0.12)
 wheel_radius = LaunchConfiguration('wheel_radius', default=0.032)
-wheel_angvel_to_pwm = LaunchConfiguration('wheel_angvel_to_pwm', default=10.0)
+wheel_angvel_to_pwm = LaunchConfiguration('wheel_angvel_to_pwm', default=20.0)
 invert_left_motor = LaunchConfiguration('invert_left_motor', default=False)
 invert_right_motor = LaunchConfiguration('invert_right_motor', default=False)
 
@@ -196,6 +196,7 @@ def generate_launch_description():
                          'launch', 'online_async_launch.py')
         ),
         launch_arguments={
+            
             'slam_params_file': slam_params_file
         }.items()
     )
@@ -283,6 +284,7 @@ def generate_launch_description():
                     'init_pose_from_topic': '',
                     'freq': 10.0}],
             ),
+            slam_toolbox_launch
         ])
 
     return LaunchDescription(
@@ -292,5 +294,4 @@ def generate_launch_description():
         get_imu_driver_launch_arguments() +
         [
             robot_nodes,
-            slam_toolbox_launch
         ])
