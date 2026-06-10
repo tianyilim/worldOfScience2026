@@ -38,12 +38,6 @@ wheel_angvel_to_pwm = LaunchConfiguration('wheel_angvel_to_pwm', default=20.0)
 invert_left_motor = LaunchConfiguration('invert_left_motor', default=False)
 invert_right_motor = LaunchConfiguration('invert_right_motor', default=False)
 
-# Launch arguments for IMU driver
-yaw_b_i_deg = LaunchConfiguration('yaw_B_I_deg', default=180.0)
-pitch_b_i_deg = LaunchConfiguration('pitch_B_I_deg', default=0.0)
-roll_b_i_deg = LaunchConfiguration('roll_B_I_deg', default=180.0)
-freq_hz = LaunchConfiguration('freq_hz', default=100.0)
-
 # Launch arguments for servo driver
 servo_pin = LaunchConfiguration('servo_pin', default='11')
 max_angle = LaunchConfiguration('max_angle', default='180')
@@ -144,30 +138,6 @@ def get_motor_driver_launch_arguments():
     ]
 
 
-def get_imu_driver_launch_arguments():
-    return [
-        DeclareLaunchArgument(
-            'yaw_B_I_deg',
-            default_value=yaw_b_i_deg,
-            description='Yaw rotation from IMU frame to robot body frame (deg)'),
-
-        DeclareLaunchArgument(
-            'pitch_B_I_deg',
-            default_value=pitch_b_i_deg,
-            description='Pitch rotation from IMU frame to robot body frame (deg)'),
-
-        DeclareLaunchArgument(
-            'roll_B_I_deg',
-            default_value=roll_b_i_deg,
-            description='Roll rotation from IMU frame to robot body frame (deg)'),
-
-        DeclareLaunchArgument(
-            'freq_hz',
-            default_value=freq_hz,
-            description='IMU polling frequency (Hz)'),
-    ]
-
-
 def get_servo_driver_launch_arguments():
     return [
         DeclareLaunchArgument(
@@ -249,18 +219,6 @@ def generate_launch_description():
                     'wheel_angvel_to_pwm': ParameterValue(wheel_angvel_to_pwm, value_type=float),
                     'invert_left_motor': ParameterValue(invert_left_motor, value_type=bool),
                     'invert_right_motor': ParameterValue(invert_right_motor, value_type=bool),
-                }],
-                output='screen'),
-
-            Node(
-                package='imu_driver',
-                executable='imu_driver_node',
-                name='imu_driver_node',
-                parameters=[{
-                    'yaw_B_I_deg': ParameterValue(yaw_b_i_deg, value_type=float),
-                    'pitch_B_I_deg': ParameterValue(pitch_b_i_deg, value_type=float),
-                    'roll_B_I_deg': ParameterValue(roll_b_i_deg, value_type=float),
-                    'freq_hz': ParameterValue(freq_hz, value_type=float),
                 }],
                 output='screen'),
 
