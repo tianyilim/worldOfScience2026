@@ -6,6 +6,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch.actions import (DeclareLaunchArgument, GroupAction,
                             IncludeLaunchDescription)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node, PushRosNamespace, SetRemap
 from launch_ros.parameter_descriptions import ParameterValue
@@ -183,6 +184,16 @@ def generate_launch_description():
             'slam_params_file': slam_params_file
         }.items()
     )
+    # Include BLE Teleop Joy Launch
+    joy_launch = IncludeLaunchDescription(
+        XMLLaunchDescriptionSource(
+            os.path.join(get_package_share_directory('wos_bringup'),
+                         'launch', 'ble_teleop_joy.launch.xml')
+        ),
+        launch_arguments={
+            'namespace': robot_namespace,
+        }.items()
+    )
 
     robot_nodes = GroupAction(
         actions=[
@@ -265,4 +276,5 @@ def generate_launch_description():
         get_imu_driver_launch_arguments() +
         [
             robot_nodes,
+            joy_launch
         ])
