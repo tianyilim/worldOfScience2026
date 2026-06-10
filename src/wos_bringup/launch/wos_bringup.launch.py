@@ -241,6 +241,8 @@ def generate_launch_description():
                     'max_angle': ParameterValue(max_angle, value_type=int),
                     'min_angle': ParameterValue(min_angle, value_type=int),
                     'joy_angle_increment': ParameterValue(joy_angle_increment, value_type=int),
+                    'joy_open_button_index': ParameterValue(joy_open_button_index, value_type=int),
+                    'joy_close_button_index': ParameterValue(joy_close_button_index, value_type=int)
                 }],
                 output='screen'),
 
