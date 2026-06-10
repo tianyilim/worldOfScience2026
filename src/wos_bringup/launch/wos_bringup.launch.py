@@ -48,6 +48,10 @@ freq_hz = LaunchConfiguration('freq_hz', default=100.0)
 servo_pin = LaunchConfiguration('servo_pin', default='11')
 max_angle = LaunchConfiguration('max_angle', default='180')
 min_angle = LaunchConfiguration('min_angle', default='0')
+joy_open_button_index = LaunchConfiguration(
+    'joy_open_button_index', default='2')
+joy_close_button_index = LaunchConfiguration(
+    'joy_close_button_index', default='0')
 joy_angle_increment = LaunchConfiguration('joy_angle_increment', default='5')
 
 # Launch arguments for SLAM
@@ -168,22 +172,32 @@ def get_servo_driver_launch_arguments():
     return [
         DeclareLaunchArgument(
             'servo_pin',
-            default_value='11',
+            default_value=servo_pin,
             description='GPIO pin number for servo output'),
 
         DeclareLaunchArgument(
             'max_angle',
-            default_value='180',
+            default_value=max_angle,
             description='Maximum angle for the servo (degrees)'),
 
         DeclareLaunchArgument(
             'min_angle',
-            default_value='0',
+            default_value=min_angle,
             description='Minimum angle for the servo (degrees)'),
 
         DeclareLaunchArgument(
+            'joy_open_button_index',
+            default_value=joy_open_button_index,
+            description='Joy button index for opening the servo'),
+
+        DeclareLaunchArgument(
+            'joy_close_button_index',
+            default_value=joy_close_button_index,
+            description='Joy button index for closing the servo'),
+
+        DeclareLaunchArgument(
             'joy_angle_increment',
-            default_value='5',
+            default_value=joy_angle_increment,
             description='Angle increment for joystick control (degrees)'),
     ]
 
