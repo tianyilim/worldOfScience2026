@@ -25,6 +25,8 @@ git submodule update --init --recursive
 
 # Install relevant packages system-wide
 sudo apt update
+sudo apt -y upgrade
+sudo apt update
 sudo apt install -y python3-smbus python3-venv python3-pip \
     net-tools network-manager build-essential cmake \
     python3-colcon-common-extensions ros-jazzy-slam-toolbox \
