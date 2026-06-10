@@ -180,7 +180,6 @@ def generate_launch_description():
                          'launch', 'online_async_launch.py')
         ),
         launch_arguments={
-            
             'slam_params_file': slam_params_file
         }.items()
     )
@@ -204,7 +203,7 @@ def generate_launch_description():
                              'inverted': ParameterValue(inverted, value_type=bool),
                              'angle_compensate': ParameterValue(angle_compensate, value_type=bool),
                              'scan_mode': scan_mode}],
-                output='screen'),
+                output='log'),
 
             Node(
                 package='motor_driver',
@@ -240,13 +239,13 @@ def generate_launch_description():
                 arguments=['0', '0', '0', '0', '0',
                            '0', 'base_footprint', 'laser'],
                 name='base_footprint_laser_tf',
-                output='screen'),
+                output='log'),
 
             Node(
                 package='rf2o_laser_odometry',
                 executable='rf2o_laser_odometry_node',
                 name='rf2o_laser_odometry',
-                output='screen',
+                output='log',
                 parameters=[{
                     'laser_scan_topic': 'scan',
                     'odom_topic': 'odom',
