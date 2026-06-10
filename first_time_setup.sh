@@ -61,7 +61,7 @@ colcon build --symlink-install
     echo "source /opt/ros/jazzy/setup.bash"
     echo "source $(pwd)/install/setup.bash"
     echo "export ROS_DOMAIN_ID=$RPI_ID"
-    echo "ROS_DOMAIN_ID is set to $ROS_DOMAIN_ID"
+    echo 'echo "ROS_DOMAIN_ID is set to $ROS_DOMAIN_ID"'
 } >>~/.bashrc
 
 # Add to tmux.conf
