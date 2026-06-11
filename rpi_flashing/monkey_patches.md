@@ -11,7 +11,7 @@ Add these lines:
 dtparam=cooling_fan=on
 dtparam=fan_temp0=40000
 dtparam=fan_temp0_hyst=5000
-dtparam=fan_temp0_speed=20
+dtparam=fan_temp0_speed=200
 ```
 
 ## Connecting to Playground Wifi
@@ -62,5 +62,15 @@ network:
             password: "sp1sp2sp3"
         "DSO-World Of Science":
           auth:
+            key-management: "psk"
             password: "Hell0DSO!"
 ```
+
+01 - 192.168.1.129
+02
+03 - 192.168.1.130
+04 - 192.168.1.128
+05
+06
+07 - 192.168.1.131
+11 - 192.168.1.132

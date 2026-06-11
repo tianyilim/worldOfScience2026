@@ -41,13 +41,13 @@ invert_right_motor = LaunchConfiguration('invert_right_motor', default=False)
 
 # Launch arguments for servo driver
 servo_pin = LaunchConfiguration('servo_pin', default='11')
-max_angle = LaunchConfiguration('max_angle', default='180')
+max_angle = LaunchConfiguration('max_angle', default='150')
 min_angle = LaunchConfiguration('min_angle', default='0')
 joy_open_button_index = LaunchConfiguration(
     'joy_open_button_index', default='2')
 joy_close_button_index = LaunchConfiguration(
     'joy_close_button_index', default='0')
-joy_angle_increment = LaunchConfiguration('joy_angle_increment', default='5')
+joy_angle_increment = LaunchConfiguration('joy_angle_increment', default='2')
 
 # Launch arguments for SLAM
 slam_params_file = LaunchConfiguration(
