@@ -180,6 +180,7 @@ def generate_launch_description():
             PushRosNamespace(robot_namespace),
             SetRemap(src='/scan', dst='scan'),
             SetRemap(src='/map', dst='map'),
+            SetRemap(src='/map_metadata', dst='map_metadata'),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
                     os.path.join(get_package_share_directory('slam_toolbox'),
@@ -212,7 +213,6 @@ def generate_launch_description():
             Node(
                 package='rplidar_ros',
                 executable='rplidar_node',
-                name='rplidar_node',
                 parameters=[{'channel_type': channel_type,
                              'serial_port': serial_port,
                              'serial_baudrate': ParameterValue(serial_baudrate, value_type=int),
@@ -225,7 +225,6 @@ def generate_launch_description():
             Node(
                 package='motor_driver',
                 executable='motor_driver_node',
-                name='motor_driver_node',
                 parameters=[{
                     'max_linear_vel': ParameterValue(max_linear_vel, value_type=float),
                     'max_angular_vel': ParameterValue(max_angular_vel, value_type=float),
@@ -241,7 +240,6 @@ def generate_launch_description():
             Node(
                 package='servo_driver',
                 executable='servo_driver_node',
-                name='servo_driver_node',
                 parameters=[{
                     'servo_pin': ParameterValue(servo_pin, value_type=int),
                     'max_angle': ParameterValue(max_angle, value_type=int),
@@ -260,20 +258,19 @@ def generate_launch_description():
                 name='base_footprint_laser_tf',
                 output='log'),
 
-            # Node(
-            #     package='rf2o_laser_odometry',
-            #     executable='rf2o_laser_odometry_node',
-            #     name='rf2o_laser_odometry',
-            #     output='log',
-            #     parameters=[{
-            #         'laser_scan_topic': 'scan',
-            #         'odom_topic': 'odom',
-            #         'publish_tf': True,
-            #         'base_frame_id': 'base_footprint',
-            #         'odom_frame_id': 'odom',
-            #         'init_pose_from_topic': '',
-            #         'freq': 10.0}],
-            # ),
+            Node(
+                package='rf2o_laser_odometry',
+                executable='rf2o_laser_odometry_node',
+                output='log',
+                parameters=[{
+                    'laser_scan_topic': 'scan',
+                    'odom_topic': 'odom',
+                    'publish_tf': True,
+                    'base_frame_id': 'base_footprint',
+                    'odom_frame_id': 'odom',
+                    'init_pose_from_topic': '',
+                    'freq': 10.0}],
+            ),
         ])
 
     return LaunchDescription(
