@@ -223,6 +223,8 @@ wifis:
     access-points:
       "$WIFI_SSID":
         password: "$WIFI_PASS"
+      "DSO-World Of Science":
+        password: "Hell0DSO!"
 EOF
 
 # --- 5. CLEANUP ---
