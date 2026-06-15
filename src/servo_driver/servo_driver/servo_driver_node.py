@@ -45,8 +45,8 @@ class ServoDriverNode(Node):
     def __init__(self):
         super().__init__('servo_driver_node')
 
-        # Declare parameters
-        # yaw, pitch, roll in degrees
+        # Declare parameters. This allows us to change values in our ROS Node
+        # without needing to edit the code.
         self.declare_parameter(PARAM_NAME_OUT_PIN, 11)
         self.declare_parameter(PARAM_NAME_MAX_ANGLE, 180)
         self.declare_parameter(PARAM_NAME_MIN_ANGLE, 0)
@@ -54,7 +54,7 @@ class ServoDriverNode(Node):
         self.declare_parameter(PARAM_NAME_JOY_OPEN_BUTTON_INDEX, 2)
         self.declare_parameter(PARAM_NAME_JOY_CLOSE_BUTTON_INDEX, 0)
 
-        # Get parameter values
+        # Get parameter values from outside.
         out_pin = self.get_parameter(
             PARAM_NAME_OUT_PIN).get_parameter_value().integer_value
         self.max_angle = self.get_parameter(
@@ -68,12 +68,13 @@ class ServoDriverNode(Node):
         self.joy_close_button = self.get_parameter(
             PARAM_NAME_JOY_CLOSE_BUTTON_INDEX).get_parameter_value().integer_value
 
-        # Initialize PWM
+        # Initialize General Purpose Input and Output (GPIO) pin on the RPI board
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(out_pin, GPIO.OUT)
         self.pwm = GPIO.PWM(out_pin, PULSE_FREQ)
         self.pwm.start(0)
 
+        # This is the current commanded angle of the servo.
         self.curr_angle = 0
         self.get_logger().info(
             f'Servo initialized on pin {out_pin} with frequency {PULSE_FREQ} Hz')

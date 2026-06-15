@@ -11,6 +11,7 @@ from motor_driver.motor_driver_impl import THIS_BOARD_TYPE, DFRobot_DC_Motor_IIC
 
 
 def print_board_status(board: Board):
+    '''Helper function to read Motor Driver board status.'''
     if board.last_operate_status == board.STA_OK:
         print("board status: everything ok")
     elif board.last_operate_status == board.STA_ERR:
@@ -24,6 +25,7 @@ def print_board_status(board: Board):
 
 
 def get_motor_driver_board(node: "MotorDriverNode") -> Board:
+    '''Helper function to read Motor Driver board status.'''
     if THIS_BOARD_TYPE:
         # RaspberryPi select bus 1, set address to 0x10
         board = Board(1, 0x10)
@@ -169,9 +171,18 @@ class MotorDriverNode(Node):
 def main(args=None):
     rclpy.init(args=args)
     motor_driver = MotorDriverNode()
-    rclpy.spin(motor_driver)
-    # Destroy the node explicitly
-    # (optional - otherwise it will be done automatically when the garbage collector destroys the node object)
+    try:
+        rclpy.spin(motor_driver)
+    except KeyboardInterrupt:
+        print("[motor driver]:", "-"*100)
+        print("[motor driver]: STOPPING MOTOR DRIVER")
+        motor_driver.board.motor_movement(
+            [motor_driver.board.M1, motor_driver.board.M2],
+            motor_driver.board.CW, 0)
+        print("[motor driver]:", "-"*100)
+    except Exception as e:
+        print(f"[motor driver]: {e}")
+
     motor_driver.destroy_node()
     rclpy.shutdown()
 
