@@ -4,36 +4,54 @@ from rclpy.node import Node
 import time
 from pprint import pformat
 from geometry_msgs.msg import Twist
-
-import RPi.GPIO as GPIO
-
-# Set up
-
-MOTOR_1_OUT_PIN_A = 32
-MOTOR_1_OUT_PIN_B = 36
-MOTOR_2_OUT_PIN_A = 38
-MOTOR_2_OUT_PIN_B = 40
-
-PULSE_FREQ = 50
-
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(MOTOR_1_OUT_PIN_A, GPIO.OUT)
-GPIO.setup(MOTOR_1_OUT_PIN_B, GPIO.OUT)
-GPIO.setup(MOTOR_2_OUT_PIN_A, GPIO.OUT)
-GPIO.setup(MOTOR_2_OUT_PIN_B, GPIO.OUT)
+from motor_driver.motor_driver_impl import THIS_BOARD_TYPE, DFRobot_DC_Motor_IIC as Board
 
 
-def _move_motor(pin_a, pin_b,
-                is_forward: bool = True,
-                speed: float = 0):
+''' print last operate status, users can use this variable to determine the result of a function call. '''
 
-    speed = min(100, max(0, speed))
-    if is_forward:
-        pin_a.ChangeDutyCycle(speed)
-        pin_b.ChangeDutyCycle(0)
+
+def print_board_status(board: Board):
+    '''Helper function to read Motor Driver board status.'''
+    if board.last_operate_status == board.STA_OK:
+        print("board status: everything ok")
+    elif board.last_operate_status == board.STA_ERR:
+        print("board status: unexpected error")
+    elif board.last_operate_status == board.STA_ERR_DEVICE_NOT_DETECTED:
+        print("board status: device not detected")
+    elif board.last_operate_status == board.STA_ERR_PARAMETER:
+        print("board status: parameter error, last operate no effective")
+    elif board.last_operate_status == board.STA_ERR_SOFT_VERSION:
+        print("board status: unsupport board framware version")
+
+
+def get_motor_driver_board(node: "MotorDriverNode") -> Board:
+    '''Helper function to read Motor Driver board status.'''
+    if THIS_BOARD_TYPE:
+        # RaspberryPi select bus 1, set address to 0x10
+        board = Board(1, 0x10)
     else:
-        pin_a.ChangeDutyCycle(0)
-        pin_b.ChangeDutyCycle(speed)
+        # RockPi select bus 7, set address to 0x10
+        board = Board(7, 0x10)
+
+    # Do initial configuration and hardware sanity check
+    l = board.detect()
+    node.get_logger().info("Motor driver board list conform:")
+    node.get_logger().info(f"{pformat(l)}")
+
+    while board.begin() != board.STA_OK:    # Board begin and check board status
+        print_board_status(board)
+        node.get_logger().warning("Motor driver board init failed, retrying...")
+        time.sleep(2)
+    node.get_logger().info("Motor driver board init success")
+
+    # Set initial parameters
+    # board.set_encoder_enable(board.NONE)                 # Set selected DC motor encoder enable
+    # Set selected DC motor encoder disable
+    board.set_encoder_disable(board.ALL)
+    # board.set_encoder_reduction_ratio(board.ALL, 43)    # Set selected DC motor encoder reduction ratio, test motor reduction ratio is 43.8
+    # Set DC motor pwm frequency to 1000HZ; can experiment with other values.
+    board.set_motor_pwm_frequency(1000)
+    return board
 
 
 class MotorDriverNode(Node):
@@ -82,17 +100,11 @@ class MotorDriverNode(Node):
         self.INVERT_RIGHT_MOTOR = self.get_parameter(
             "invert_right_motor").get_parameter_value().bool_value
 
-        self.motor_1_a = GPIO.PWM(MOTOR_1_OUT_PIN_A, PULSE_FREQ)
-        self.motor_1_b = GPIO.PWM(MOTOR_1_OUT_PIN_B, PULSE_FREQ)
-        self.motor_2_a = GPIO.PWM(MOTOR_2_OUT_PIN_A, PULSE_FREQ)
-        self.motor_2_b = GPIO.PWM(MOTOR_2_OUT_PIN_B, PULSE_FREQ)
-        self.motor_1_a.start(0)
-        self.motor_1_b.start(0)
-        self.motor_2_a.start(0)
-        self.motor_2_b.start(0)
+        # Initialize motor driver board
+        self.board = get_motor_driver_board(self)
 
-        # Stop Motor
-        self.stop_motors()
+        # Ensure that motors are stopped at startup
+        self.board.motor_stop(self.board.ALL)
 
         # Initialise callbacks last, after all setup is done
         self.twist_subscription = self.create_subscription(
@@ -100,22 +112,6 @@ class MotorDriverNode(Node):
             'cmd_vel',
             self.twist_callback,
             10)
-
-    def stop_motors(self):
-        _move_motor(self.motor_1_a, self.motor_1_b, speed=0.0)
-        _move_motor(self.motor_2_a, self.motor_2_b, speed=0.0)
-
-    def _unbind_gpio(self):
-        self.motor_1_a.stop()
-        self.motor_1_b.stop()
-        self.motor_2_a.stop()
-        self.motor_2_b.stop()
-        GPIO.cleanup([
-            MOTOR_1_OUT_PIN_A,
-            MOTOR_1_OUT_PIN_B,
-            MOTOR_2_OUT_PIN_A,
-            MOTOR_2_OUT_PIN_B
-        ])
 
     def twist_callback(self, msg: Twist):
         # This is of course quite basic, does not account for deadband etc.
@@ -150,17 +146,26 @@ class MotorDriverNode(Node):
 
         # Set motor directions and speeds.
         if speed_left >= 0:
-            _move_motor(self.motor_1_a, self.motor_1_b,
-                        is_forward=True, speed=pwm_left)
+            self.board.motor_movement(
+                [self.board.M1],
+                self.board.CCW if not self.INVERT_LEFT_MOTOR else self.board.CW,
+                pwm_left)
         else:
-            _move_motor(self.motor_1_a, self.motor_1_b,
-                        is_forward=False, speed=pwm_left)
+            self.board.motor_movement(
+                [self.board.M1],
+                self.board.CW if not self.INVERT_LEFT_MOTOR else self.board.CCW,
+                pwm_left)
+
         if speed_right >= 0:
-            _move_motor(self.motor_2_a, self.motor_2_b,
-                        is_forward=True, speed=pwm_right)
+            self.board.motor_movement(
+                [self.board.M2],
+                self.board.CW if not self.INVERT_RIGHT_MOTOR else self.board.CCW,
+                pwm_right)
         else:
-            _move_motor(self.motor_2_a, self.motor_2_b,
-                        is_forward=False, speed=pwm_right)
+            self.board.motor_movement(
+                [self.board.M2],
+                self.board.CCW if not self.INVERT_RIGHT_MOTOR else self.board.CW,
+                pwm_right)
 
 
 def main(args=None):
@@ -171,8 +176,9 @@ def main(args=None):
     except KeyboardInterrupt:
         print("[motor driver]:", "-"*100)
         print("[motor driver]: STOPPING MOTOR DRIVER")
-        motor_driver.stop_motors()
-        motor_driver._unbind_gpio()
+        motor_driver.board.motor_movement(
+            [motor_driver.board.M1, motor_driver.board.M2],
+            motor_driver.board.CW, 0)
         print("[motor driver]:", "-"*100)
     except Exception as e:
         print(f"[motor driver]: {e}")
