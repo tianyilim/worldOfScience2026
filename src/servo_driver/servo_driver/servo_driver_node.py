@@ -1,9 +1,3 @@
-"""
-Servo driver.
-
-Logic taken from https://gist.github.com/MichaelCurrin/48c412b28cb0a44ae9f74bc5f260e1d3
-"""
-
 import time
 
 import rclpy
@@ -30,13 +24,14 @@ def angle_to_duty_cycle(angle: float) -> int:
         angle: Desired servo angle in degrees (0 to 180)
     Returns:
         Duty cycle percentage corresponding to the angle
+
+    You should:
+    1. Ensure that the Servo Angle is within the Servo's Bounds (X degrees to Y degrees)
+    2. Map the Servo Angle to the PWM Cycle
     """
 
-    # Ensure angle is within bounds
-    angle = max(0, min(180, angle))
-    # Map angle to duty cycle: 0 deg -> 2, 180 deg -> 12
-    duty_cycle = (angle / 180) * 10 + 2.0
-    return int(round(duty_cycle))
+    # TODO: Remove this line after you have written your function
+    raise NotImplementedError("Please implement this function.")
 
 
 class ServoDriverNode(Node):
@@ -91,33 +86,43 @@ class ServoDriverNode(Node):
 
     def cmd_angle_callback(self, msg: Int8):
         """Callback for receiving desired servo angle."""
+        
+        # Clamp the desired angle between safety bounds.
         desired_angle = min(self.max_angle, max(self.min_angle, msg.data))
+        # Convert from an angle in degrees to a servo's duty cycle.
         duty_cycle = angle_to_duty_cycle(desired_angle)
         self.pwm.ChangeDutyCycle(duty_cycle)
+        # Print out what we are doing
         self.get_logger().info(
-            f'Angle command received: {desired_angle} degrees, setting duty cycle to {duty_cycle}%')
+            f'Angle command received: {desired_angle}deg -> duty cycle to {duty_cycle}%')
+
         self.curr_angle = desired_angle
 
     def joy_callback(self, msg: Joy):
-        """Callback for receiving joystick input."""
+        """
+        Function that Translates Button Press Commands to Servo Angle Movements
+        - Determine the Index of the Button you are using
+        """
+        
+        # Ensure that the ROS Message contains valid content.
+        if len(msg.axes) <= 0:
+            # By returning early, invalid code will not be executed.
+            return
 
-        # Assume LB and RB buttons are used to control the servo angle
-        # LB: index 4, RB: index 5
+        self.get_logger().info(f"Open  button index is set to: {self.joy_open_button}")
+        self.get_logger().info(f"Close button index is set to: {self.joy_close_button}")
+        msg.buttons[None]
 
-        angle_incr = self.joy_angle_increment
+        # TODO 1: Check if the Open / Closed Button has been pressed
+        # The Open and Close buttons are defined as class attributes above. Use them!
 
-        if len(msg.axes) > 0:
-            close_pressed = msg.buttons[self.joy_close_button] == 1
-            open_pressed = msg.buttons[self.joy_open_button] == 1
+        # TODO 2: Update the Angle of the Servo based on the Button Presses
+        self.curr_angle = ...
 
-            if close_pressed and not open_pressed:
-                # Decrease angle
-                new_angle = max(self.min_angle, self.curr_angle - angle_incr)
-                self.cmd_angle_callback(Int8(data=new_angle))
-            elif open_pressed and not close_pressed:
-                # Increase angle
-                new_angle = min(self.max_angle, self.curr_angle + angle_incr)
-                self.cmd_angle_callback(Int8(data=new_angle))
+        # TODO 3: Do you need to protect against commanding open/closed angle beyond the limits?
+
+        # Call cmd_angle_callback() based on the new angle pressed.
+        self.cmd_angle_callback(Int8(data=new_angle))
 
 
 def main(args=None):
